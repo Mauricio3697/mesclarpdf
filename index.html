@@ -111,8 +111,9 @@
     }
     .stamp-preview {
       position: absolute;
-      width: 50px;
-      height: 50px;
+      /* Tamanho inicial do carimbo: 200 x 40 px */
+      width: 200px;
+      height: 40px;
       cursor: move;
       user-select: none;
       background-size: contain;
@@ -127,7 +128,7 @@
       align-items: center;
     }
     .control-group label {
-      min-width: 120px;
+      min-width: 150px;
     }
     .preset-positions {
       display: grid;
@@ -254,11 +255,13 @@
         <button class="preset-btn" onclick="setPresetPosition('bottomCenter')">Inferior Centro</button>
         <button class="preset-btn" onclick="setPresetPosition('bottomRight')">Inferior Direito</button>
       </div>
+      <!-- Controle para ajustar a largura do carimbo -->
       <div class="control-group">
-        <label>Tamanho do Carimbo (px):</label>
-        <input type="range" id="stampSize" value="50" min="10" max="200" oninput="updateStampSize(this.value)" />
-        <span id="stampSizeDisplay">50px</span>
+        <label>Largura do Carimbo (px):</label>
+        <input type="range" id="stampWidth" value="200" min="50" max="300" oninput="updateStampWidth(this.value)" />
+        <span id="stampWidthDisplay">200px</span>
       </div>
+      <!-- Controle para o passo do movimento -->
       <div class="control-group">
         <label>Passo do movimento:</label>
         <input type="range" id="moveStep" value="10" min="1" max="50" oninput="updateMoveStep(this.value)" />
@@ -284,6 +287,8 @@
     let posY = 50;
     let isDragging = false;
     let currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+    // Definindo altura fixa do carimbo (40px)
+    const fixedStampHeight = 40;
 
     // Elementos do DOM
     const dropZone = document.getElementById('dropZone');
@@ -432,11 +437,12 @@
       updateCoordinates(x, y);
     }
 
-    // Atualiza o tamanho do carimbo (escala) na pré-visualização
-    function updateStampSize(value) {
-      document.getElementById('stampSizeDisplay').textContent = `${value}px`;
+    // Atualiza a largura do carimbo (mantendo altura fixa em 40px) na pré-visualização
+    function updateStampWidth(value) {
+      document.getElementById('stampWidthDisplay').textContent = `${value}px`;
       stampPreview.style.width = `${value}px`;
-      stampPreview.style.height = `${value}px`;
+      // Garante que a altura permaneça fixa
+      stampPreview.style.height = `${fixedStampHeight}px`;
     }
     function updateMoveStep(value) {
       document.getElementById('moveStepDisplay').textContent = `${value}px`;
@@ -468,8 +474,9 @@
         } else {
           embeddedStamp = await mergedPdfDoc.embedJpg(stampArrayBuffer);
         }
-        // Obter o tamanho definido na pré-visualização (em pixels)
-        const stampSize = parseInt(document.getElementById('stampSize').value);
+        // Obter a largura definida na pré-visualização e usar a altura fixa (40px)
+        const stampWidthValue = parseInt(document.getElementById('stampWidth').value);
+        const stampHeightValue = fixedStampHeight;
 
         // Conversão das coordenadas com escala:
         const previewWidth = stampPreviewContainer.clientWidth;
@@ -484,9 +491,9 @@
         const scaleY = pdfHeight / previewHeight;
         // Converter as coordenadas: lembre-se que no PDF a origem é inferior-esquerda
         const finalX = posX * scaleX;
-        const finalY = pdfHeight - (posY * scaleY) - (stampSize * scaleY);
-        const finalWidth = stampSize * scaleX;
-        const finalHeight = stampSize * scaleY;
+        const finalY = pdfHeight - (posY * scaleY) - (stampHeightValue * scaleY);
+        const finalWidth = stampWidthValue * scaleX;
+        const finalHeight = stampHeightValue * scaleY;
 
         // Adicionar o carimbo em cada página
         for (let j = 0; j < pages.length; j++) {
