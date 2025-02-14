@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UBS Admin: PDF Revolution - 2 Carimbos</title>
+  <title>UBS Admin: PDF Revolution</title>
   <!-- Bibliotecas necessárias -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
@@ -32,8 +32,14 @@
       color: #333;
     }
     @keyframes fadeInUp {
-      from { opacity: 0; transform: translate3d(0, 20px, 0); }
-      to { opacity: 1; transform: none; }
+      from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
     }
     h1 {
       color: #1a73e8;
@@ -86,7 +92,7 @@
     /* Área de pré-visualização simulando uma página do PDF */
     .stamp-preview-container {
       position: relative;
-      width: 300px;
+      width: 300px;   /* Dimensões da pré-visualização */
       height: 400px;
       margin: 20px auto;
       border: 2px solid #ccc;
@@ -105,6 +111,7 @@
     }
     .stamp-preview {
       position: absolute;
+      /* Tamanho inicial do carimbo: 200 x 40 px */
       width: 200px;
       height: 40px;
       cursor: move;
@@ -120,7 +127,9 @@
       margin: 10px 0;
       align-items: center;
     }
-    .control-group label { min-width: 180px; }
+    .control-group label {
+      min-width: 150px;
+    }
     .preset-positions {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -171,7 +180,9 @@
       cursor: pointer;
       transition: transform 0.2s;
     }
-    .remove-btn:hover { transform: scale(1.05); }
+    .remove-btn:hover {
+      transform: scale(1.05);
+    }
     .coordinates-display {
       background: #e9ecef;
       padding: 8px;
@@ -195,7 +206,9 @@
       width: 0%;
       transition: width 0.3s;
     }
-    input[type="range"] { width: 200px; }
+    input[type="range"] {
+      width: 200px;
+    }
   </style>
 </head>
 <body>
@@ -209,75 +222,50 @@
       <button onclick="document.getElementById('fileInput').click()">Selecione os Arquivos</button>
       <input type="file" id="fileInput" multiple accept=".pdf" style="display: none" />
     </div>
+
     <!-- Lista de arquivos -->
     <div class="file-list" id="fileList"></div>
 
-    <!-- Upload do Carimbo 1 -->
+    <!-- Upload do carimbo -->
     <div class="upload-section">
-      <p>Selecione a imagem do Carimbo 1 (PNG recomendado)</p>
-      <button onclick="document.getElementById('stampInput1').click()">Escolher Carimbo 1</button>
-      <input type="file" id="stampInput1" accept="image/*" style="display: none" />
+      <p>Selecione a imagem do carimbo (PNG recomendado)</p>
+      <button onclick="document.getElementById('stampInput').click()">Escolher Carimbo</button>
+      <input type="file" id="stampInput" accept="image/*" style="display: none" />
     </div>
 
-    <!-- Upload do Carimbo 2 -->
-    <div class="upload-section">
-      <p>Selecione a imagem do Carimbo 2 (PNG recomendado)</p>
-      <button onclick="document.getElementById('stampInput2').click()">Escolher Carimbo 2</button>
-      <input type="file" id="stampInput2" accept="image/*" style="display: none" />
-    </div>
-
-    <!-- Área de pré-visualização (simula uma página do PDF) -->
-    <div class="stamp-preview-container" id="stampPreviewContainer">
-      <!-- Os dois carimbos serão posicionados de forma independente -->
-      <div class="stamp-preview" id="stampPreview1" style="left:50px; top:50px;"></div>
-      <div class="stamp-preview" id="stampPreview2" style="left:150px; top:150px;"></div>
-    </div>
-
-    <!-- Controles do Carimbo 1 -->
+    <!-- Controles do carimbo -->
     <div class="stamp-controls">
-      <h3>Controle do Carimbo 1</h3>
+      <h3>Controle do Carimbo</h3>
       <div class="coordinates-display">
-        X: <span id="posXDisplay1">50</span>px | Y: <span id="posYDisplay1">50</span>px
+        X: <span id="posXDisplay">50</span>px | Y: <span id="posYDisplay">50</span>px
       </div>
+      <!-- Área de pré-visualização simulando a página do PDF -->
+      <div class="stamp-preview-container" id="stampPreviewContainer">
+        <div class="stamp-preview" id="stampPreview"></div>
+      </div>
+      <p style="text-align: center; font-size: 0.9em; color: #666;">Arraste o carimbo para ajustar sua posição na página</p>
       <div class="preset-positions">
-        <button class="preset-btn" onclick="setPresetPosition(1, 'topLeft')">Superior Esquerdo</button>
-        <button class="preset-btn" onclick="setPresetPosition(1, 'topCenter')">Superior Centro</button>
-        <button class="preset-btn" onclick="setPresetPosition(1, 'topRight')">Superior Direito</button>
-        <button class="preset-btn" onclick="setPresetPosition(1, 'centerLeft')">Centro Esquerdo</button>
-        <button class="preset-btn" onclick="setPresetPosition(1, 'center')">Centro</button>
-        <button class="preset-btn" onclick="setPresetPosition(1, 'centerRight')">Centro Direito</button>
-        <button class="preset-btn" onclick="setPresetPosition(1, 'bottomLeft')">Inferior Esquerdo</button>
-        <button class="preset-btn" onclick="setPresetPosition(1, 'bottomCenter')">Inferior Centro</button>
-        <button class="preset-btn" onclick="setPresetPosition(1, 'bottomRight')">Inferior Direito</button>
+        <button class="preset-btn" onclick="setPresetPosition('topLeft')">Superior Esquerdo</button>
+        <button class="preset-btn" onclick="setPresetPosition('topCenter')">Superior Centro</button>
+        <button class="preset-btn" onclick="setPresetPosition('topRight')">Superior Direito</button>
+        <button class="preset-btn" onclick="setPresetPosition('centerLeft')">Centro Esquerdo</button>
+        <button class="preset-btn" onclick="setPresetPosition('center')">Centro</button>
+        <button class="preset-btn" onclick="setPresetPosition('centerRight')">Centro Direito</button>
+        <button class="preset-btn" onclick="setPresetPosition('bottomLeft')">Inferior Esquerdo</button>
+        <button class="preset-btn" onclick="setPresetPosition('bottomCenter')">Inferior Centro</button>
+        <button class="preset-btn" onclick="setPresetPosition('bottomRight')">Inferior Direito</button>
       </div>
+      <!-- Controle para ajustar a largura do carimbo -->
       <div class="control-group">
-        <label>Largura do Carimbo 1 (px):</label>
-        <input type="range" id="stampWidth1" value="200" min="50" max="300" oninput="updateStampWidth(1, this.value)" />
-        <span id="stampWidthDisplay1">200px</span>
+        <label>Largura do Carimbo (px):</label>
+        <input type="range" id="stampWidth" value="200" min="50" max="300" oninput="updateStampWidth(this.value)" />
+        <span id="stampWidthDisplay">200px</span>
       </div>
-    </div>
-
-    <!-- Controles do Carimbo 2 -->
-    <div class="stamp-controls">
-      <h3>Controle do Carimbo 2</h3>
-      <div class="coordinates-display">
-        X: <span id="posXDisplay2">150</span>px | Y: <span id="posYDisplay2">150</span>px
-      </div>
-      <div class="preset-positions">
-        <button class="preset-btn" onclick="setPresetPosition(2, 'topLeft')">Superior Esquerdo</button>
-        <button class="preset-btn" onclick="setPresetPosition(2, 'topCenter')">Superior Centro</button>
-        <button class="preset-btn" onclick="setPresetPosition(2, 'topRight')">Superior Direito</button>
-        <button class="preset-btn" onclick="setPresetPosition(2, 'centerLeft')">Centro Esquerdo</button>
-        <button class="preset-btn" onclick="setPresetPosition(2, 'center')">Centro</button>
-        <button class="preset-btn" onclick="setPresetPosition(2, 'centerRight')">Centro Direito</button>
-        <button class="preset-btn" onclick="setPresetPosition(2, 'bottomLeft')">Inferior Esquerdo</button>
-        <button class="preset-btn" onclick="setPresetPosition(2, 'bottomCenter')">Inferior Centro</button>
-        <button class="preset-btn" onclick="setPresetPosition(2, 'bottomRight')">Inferior Direito</button>
-      </div>
+      <!-- Controle para o passo do movimento -->
       <div class="control-group">
-        <label>Largura do Carimbo 2 (px):</label>
-        <input type="range" id="stampWidth2" value="200" min="50" max="300" oninput="updateStampWidth(2, this.value)" />
-        <span id="stampWidthDisplay2">200px</span>
+        <label>Passo do movimento:</label>
+        <input type="range" id="moveStep" value="10" min="1" max="50" oninput="updateMoveStep(this.value)" />
+        <span id="moveStepDisplay">10px</span>
       </div>
     </div>
 
@@ -291,43 +279,45 @@
   </div>
 
   <script>
-    // Variáveis globais para PDFs e carimbos
+    // Variáveis globais
     let pdfs = [];
-    let stamp1 = null;
-    let stamp2 = null;
-    // --- Carimbo 1 ---
-    let posX1 = 50, posY1 = 50;
-    let isDragging1 = false, initialX1 = 0, initialY1 = 0, currentX1 = 0, currentY1 = 0, xOffset1 = 0, yOffset1 = 0;
-    // --- Carimbo 2 ---
-    let posX2 = 150, posY2 = 150;
-    let isDragging2 = false, initialX2 = 0, initialY2 = 0, currentX2 = 0, currentY2 = 0, xOffset2 = 0, yOffset2 = 0;
+    let stamp = null;
+    // posX e posY são medidos na pré-visualização (origem: topo-esquerdo)
+    let posX = 50;
+    let posY = 50;
+    let isDragging = false;
+    let currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+    // Definindo altura fixa do carimbo (40px)
     const fixedStampHeight = 40;
 
     // Elementos do DOM
     const dropZone = document.getElementById('dropZone');
     const fileInput = document.getElementById('fileInput');
+    const stampInput = document.getElementById('stampInput');
     const fileList = document.getElementById('fileList');
     const processButton = document.getElementById('processButton');
     const progressContainer = document.getElementById('progressContainer');
     const progressBar = document.getElementById('progressBar');
-    const stampPreview1 = document.getElementById('stampPreview1');
-    const stampPreview2 = document.getElementById('stampPreview2');
+    const stampPreview = document.getElementById('stampPreview');
+    const stampPreviewContainer = document.getElementById('stampPreviewContainer');
 
-    // Atualiza o botão de processamento: é necessário ter pelo menos 1 PDF e 1 carimbo (um ou os dois)
+    // Atualiza o botão de processamento
     function updateProcessButton() {
-      processButton.disabled = !(pdfs.length > 0 && (stamp1 !== null || stamp2 !== null));
+      processButton.disabled = !(pdfs.length > 0 && stamp !== null);
     }
 
-    // Adiciona arquivo à lista de PDFs
+    // Adiciona arquivo à lista
     function addFileToList(file) {
       const div = document.createElement('div');
       div.className = 'file-item';
-      div.innerHTML = `<span>${file.name}</span>
-        <button class="remove-btn" onclick="removeFile('${file.name}')">Remover</button>`;
+      div.innerHTML = `
+        <span>${file.name}</span>
+        <button class="remove-btn" onclick="removeFile('${file.name}')">Remover</button>
+      `;
       fileList.appendChild(div);
     }
 
-    // Remove arquivo da lista
+    // Remove arquivo
     function removeFile(fileName) {
       pdfs = pdfs.filter(file => file.name !== fileName);
       fileList.innerHTML = '';
@@ -335,7 +325,7 @@
       updateProcessButton();
     }
 
-    // Lida com os PDFs selecionados
+    // Lida com arquivos selecionados
     function handleFiles(files) {
       files.forEach(file => {
         if (!pdfs.some(pdf => pdf.name === file.name)) {
@@ -346,7 +336,7 @@
       updateProcessButton();
     }
 
-    // Eventos de drag & drop para PDFs
+    // Eventos de drag and drop para PDFs
     dropZone.addEventListener('dragover', (e) => {
       e.preventDefault();
       dropZone.classList.add('drag-over');
@@ -364,135 +354,101 @@
       handleFiles([...e.target.files]);
     });
 
-    // Upload do Carimbo 1
-    document.getElementById('stampInput1').addEventListener('change', (e) => {
+    // Seleção do carimbo
+    stampInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) {
-        stamp1 = file;
+        stamp = file;
         const reader = new FileReader();
         reader.onload = (e) => {
-          stampPreview1.style.backgroundImage = `url(${e.target.result})`;
-        };
-        reader.readAsDataURL(file);
-        updateProcessButton();
-      }
-    });
-    // Upload do Carimbo 2
-    document.getElementById('stampInput2').addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        stamp2 = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          stampPreview2.style.backgroundImage = `url(${e.target.result})`;
+          stampPreview.style.backgroundImage = `url(${e.target.result})`;
         };
         reader.readAsDataURL(file);
         updateProcessButton();
       }
     });
 
-    // FUNÇÕES DE DRAG & DROP PARA O CARIMBO 1
-    stampPreview1.addEventListener('mousedown', (e) => {
-      isDragging1 = true;
-      initialX1 = e.clientX - xOffset1;
-      initialY1 = e.clientY - yOffset1;
-    });
-    stampPreview1.addEventListener('mousemove', (e) => {
-      if (isDragging1) {
-        e.preventDefault();
-        currentX1 = e.clientX - initialX1;
-        currentY1 = e.clientY - initialY1;
-        xOffset1 = currentX1;
-        yOffset1 = currentY1;
-        setTranslate(currentX1, currentY1, stampPreview1);
-        updateCoordinates(1, currentX1, currentY1);
-      }
-    });
-    stampPreview1.addEventListener('mouseup', () => { isDragging1 = false; });
-    stampPreview1.addEventListener('mouseleave', () => { isDragging1 = false; });
-
-    // FUNÇÕES DE DRAG & DROP PARA O CARIMBO 2
-    stampPreview2.addEventListener('mousedown', (e) => {
-      isDragging2 = true;
-      initialX2 = e.clientX - xOffset2;
-      initialY2 = e.clientY - yOffset2;
-    });
-    stampPreview2.addEventListener('mousemove', (e) => {
-      if (isDragging2) {
-        e.preventDefault();
-        currentX2 = e.clientX - initialX2;
-        currentY2 = e.clientY - initialY2;
-        xOffset2 = currentX2;
-        yOffset2 = currentY2;
-        setTranslate(currentX2, currentY2, stampPreview2);
-        updateCoordinates(2, currentX2, currentY2);
-      }
-    });
-    stampPreview2.addEventListener('mouseup', () => { isDragging2 = false; });
-    stampPreview2.addEventListener('mouseleave', () => { isDragging2 = false; });
-
-    // Função para aplicar a translação via CSS
-    function setTranslate(x, y, el) {
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+    // Funções para drag & drop do carimbo na pré-visualização
+    function initDraggableStamp() {
+      stampPreviewContainer.addEventListener('mousedown', startDragging);
+      stampPreviewContainer.addEventListener('mousemove', drag);
+      stampPreviewContainer.addEventListener('mouseup', stopDragging);
+      stampPreviewContainer.addEventListener('mouseleave', stopDragging);
     }
-    // Atualiza as coordenadas exibidas (para carimbo 1 ou 2)
-    function updateCoordinates(stampNumber, x, y) {
-      if (stampNumber === 1) {
-        posX1 = Math.round(x);
-        posY1 = Math.round(y);
-        document.getElementById('posXDisplay1').textContent = posX1;
-        document.getElementById('posYDisplay1').textContent = posY1;
-      } else {
-        posX2 = Math.round(x);
-        posY2 = Math.round(y);
-        document.getElementById('posXDisplay2').textContent = posX2;
-        document.getElementById('posYDisplay2').textContent = posY2;
+    function startDragging(e) {
+      if (e.target === stampPreview) {
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+        isDragging = true;
       }
     }
-
-    // Função para definir posições predefinidas para cada carimbo
-    // stampNumber: 1 ou 2; position: string (ex: "topLeft", "center", etc.)
-    function setPresetPosition(stampNumber, position) {
-      const containerRect = document.getElementById('stampPreviewContainer').getBoundingClientRect();
-      let stampEl, stampWidth, stampHeight, x, y;
-      if (stampNumber === 1) {
-        stampEl = stampPreview1;
-        stampWidth = stampEl.clientWidth;
-        stampHeight = stampEl.clientHeight;
-      } else {
-        stampEl = stampPreview2;
-        stampWidth = stampEl.clientWidth;
-        stampHeight = stampEl.clientHeight;
+    function drag(e) {
+      if (isDragging) {
+        e.preventDefault();
+        currentX = e.clientX - initialX;
+        currentY = e.clientY - initialY;
+        xOffset = currentX;
+        yOffset = currentY;
+        setTranslate(currentX, currentY, stampPreview);
+        updateCoordinates(currentX, currentY);
       }
+    }
+    function stopDragging() {
+      initialX = currentX;
+      initialY = currentY;
+      isDragging = false;
+    }
+    function setTranslate(xPos, yPos, el) {
+      el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+    }
+    function updateCoordinates(x, y) {
+      posX = Math.round(x);
+      posY = Math.round(y);
+      document.getElementById('posXDisplay').textContent = posX;
+      document.getElementById('posYDisplay').textContent = posY;
+    }
+
+    // Posições predefinidas para o carimbo na pré-visualização
+    function setPresetPosition(position) {
+      const containerRect = stampPreviewContainer.getBoundingClientRect();
+      const stampRect = stampPreview.getBoundingClientRect();
+      let x, y;
       switch (position) {
-        case 'topLeft':      x = 20; y = 20; break;
-        case 'topCenter':    x = (containerRect.width - stampWidth) / 2; y = 20; break;
-        case 'topRight':     x = containerRect.width - stampWidth - 20; y = 20; break;
-        case 'centerLeft':   x = 20; y = (containerRect.height - stampHeight) / 2; break;
-        case 'center':       x = (containerRect.width - stampWidth) / 2; y = (containerRect.height - stampHeight) / 2; break;
-        case 'centerRight':  x = containerRect.width - stampWidth - 20; y = (containerRect.height - stampHeight) / 2; break;
-        case 'bottomLeft':   x = 20; y = containerRect.height - stampHeight - 20; break;
-        case 'bottomCenter': x = (containerRect.width - stampWidth) / 2; y = containerRect.height - stampHeight - 20; break;
-        case 'bottomRight':  x = containerRect.width - stampWidth - 20; y = containerRect.height - stampHeight - 20; break;
+        case 'topLeft':
+          x = 20; y = 20; break;
+        case 'topCenter':
+          x = (containerRect.width - stampRect.width) / 2; y = 20; break;
+        case 'topRight':
+          x = containerRect.width - stampRect.width - 20; y = 20; break;
+        case 'centerLeft':
+          x = 20; y = (containerRect.height - stampRect.height) / 2; break;
+        case 'center':
+          x = (containerRect.width - stampRect.width) / 2; y = (containerRect.height - stampRect.height) / 2; break;
+        case 'centerRight':
+          x = containerRect.width - stampRect.width - 20; y = (containerRect.height - stampRect.height) / 2; break;
+        case 'bottomLeft':
+          x = 20; y = containerRect.height - stampRect.height - 20; break;
+        case 'bottomCenter':
+          x = (containerRect.width - stampRect.width) / 2; y = containerRect.height - stampRect.height - 20; break;
+        case 'bottomRight':
+          x = containerRect.width - stampRect.width - 20; y = containerRect.height - stampRect.height - 20; break;
       }
-      setTranslate(x, y, stampEl);
-      updateCoordinates(stampNumber, x, y);
+      setTranslate(x, y, stampPreview);
+      updateCoordinates(x, y);
     }
 
-    // Atualiza a largura de um dos carimbos (mantendo altura fixa)
-    function updateStampWidth(stampNumber, value) {
-      if (stampNumber === 1) {
-        document.getElementById('stampWidthDisplay1').textContent = value + 'px';
-        stampPreview1.style.width = value + 'px';
-        stampPreview1.style.height = fixedStampHeight + 'px';
-      } else {
-        document.getElementById('stampWidthDisplay2').textContent = value + 'px';
-        stampPreview2.style.width = value + 'px';
-        stampPreview2.style.height = fixedStampHeight + 'px';
-      }
+    // Atualiza a largura do carimbo (mantendo altura fixa em 40px) na pré-visualização
+    function updateStampWidth(value) {
+      document.getElementById('stampWidthDisplay').textContent = `${value}px`;
+      stampPreview.style.width = `${value}px`;
+      // Garante que a altura permaneça fixa
+      stampPreview.style.height = `${fixedStampHeight}px`;
+    }
+    function updateMoveStep(value) {
+      document.getElementById('moveStepDisplay').textContent = `${value}px`;
     }
 
-    // Função para processar os PDFs e adicionar os dois carimbos (se selecionados)
+    // Função para processar os PDFs e adicionar o carimbo usando pdf-lib
     async function processPDFs() {
       processButton.disabled = true;
       progressContainer.style.display = 'block';
@@ -507,73 +463,51 @@
           const pdfDoc = await PDFLib.PDFDocument.load(pdfBuffers[i]);
           const copiedPages = await mergedPdfDoc.copyPages(pdfDoc, pdfDoc.getPageIndices());
           copiedPages.forEach(page => mergedPdfDoc.addPage(page));
-          progressBar.style.width = ((i + 1) / pdfBuffers.length * 40) + '%';
+          progressBar.style.width = ((i + 1) / pdfBuffers.length * 50) + '%';
         }
 
+        // Embutir a imagem do carimbo
+        const stampArrayBuffer = await stamp.arrayBuffer();
+        let embeddedStamp;
+        if (stamp.type === 'image/png') {
+          embeddedStamp = await mergedPdfDoc.embedPng(stampArrayBuffer);
+        } else {
+          embeddedStamp = await mergedPdfDoc.embedJpg(stampArrayBuffer);
+        }
+        // Obter a largura definida na pré-visualização e usar a altura fixa (40px)
+        const stampWidthValue = parseInt(document.getElementById('stampWidth').value);
+        const stampHeightValue = fixedStampHeight;
+
+        // Conversão das coordenadas com escala:
+        const previewWidth = stampPreviewContainer.clientWidth;
+        const previewHeight = stampPreviewContainer.clientHeight;
         const pages = mergedPdfDoc.getPages();
         if (pages.length === 0) throw new Error("Nenhuma página no PDF mesclado.");
         const firstPage = pages[0];
         const pdfWidth = firstPage.getWidth();
         const pdfHeight = firstPage.getHeight();
-        const previewContainer = document.getElementById('stampPreviewContainer');
-        const previewWidth = previewContainer.clientWidth;
-        const previewHeight = previewContainer.clientHeight;
-        // Fatores de escala (assumindo que a pré-visualização representa a página inteira)
+        // Calcular fatores de escala (supomos que a pré-visualização representa a página inteira)
         const scaleX = pdfWidth / previewWidth;
         const scaleY = pdfHeight / previewHeight;
+        // Converter as coordenadas: lembre-se que no PDF a origem é inferior-esquerda
+        const finalX = posX * scaleX;
+        const finalY = pdfHeight - (posY * scaleY) - (stampHeightValue * scaleY);
+        const finalWidth = stampWidthValue * scaleX;
+        const finalHeight = stampHeightValue * scaleY;
 
-        // Adicionar o carimbo 1 (se selecionado)
-        if (stamp1) {
-          const stampArrayBuffer1 = await stamp1.arrayBuffer();
-          let embeddedStamp1;
-          if (stamp1.type === 'image/png') {
-            embeddedStamp1 = await mergedPdfDoc.embedPng(stampArrayBuffer1);
-          } else {
-            embeddedStamp1 = await mergedPdfDoc.embedJpg(stampArrayBuffer1);
-          }
-          const stampWidthVal1 = parseInt(document.getElementById('stampWidth1').value);
-          const stampHeightVal1 = fixedStampHeight;
-          // Converter coordenadas: lembre-se que no PDF a origem é inferior-esquerda
-          const finalX1 = posX1 * scaleX;
-          const finalY1 = pdfHeight - (posY1 * scaleY) - (stampHeightVal1 * scaleY);
-          const finalWidth1 = stampWidthVal1 * scaleX;
-          const finalHeight1 = stampHeightVal1 * scaleY;
-          pages.forEach(page => {
-            page.drawImage(embeddedStamp1, {
-              x: finalX1,
-              y: finalY1,
-              width: finalWidth1,
-              height: finalHeight1,
-            });
+        // Adicionar o carimbo em cada página
+        for (let j = 0; j < pages.length; j++) {
+          const page = pages[j];
+          page.drawImage(embeddedStamp, {
+            x: finalX,
+            y: finalY,
+            width: finalWidth,
+            height: finalHeight,
           });
+          progressBar.style.width = (50 + ((j + 1) / pages.length * 50)) + '%';
         }
 
-        // Adicionar o carimbo 2 (se selecionado)
-        if (stamp2) {
-          const stampArrayBuffer2 = await stamp2.arrayBuffer();
-          let embeddedStamp2;
-          if (stamp2.type === 'image/png') {
-            embeddedStamp2 = await mergedPdfDoc.embedPng(stampArrayBuffer2);
-          } else {
-            embeddedStamp2 = await mergedPdfDoc.embedJpg(stampArrayBuffer2);
-          }
-          const stampWidthVal2 = parseInt(document.getElementById('stampWidth2').value);
-          const stampHeightVal2 = fixedStampHeight;
-          const finalX2 = posX2 * scaleX;
-          const finalY2 = pdfHeight - (posY2 * scaleY) - (stampHeightVal2 * scaleY);
-          const finalWidth2 = stampWidthVal2 * scaleX;
-          const finalHeight2 = stampHeightVal2 * scaleY;
-          pages.forEach(page => {
-            page.drawImage(embeddedStamp2, {
-              x: finalX2,
-              y: finalY2,
-              width: finalWidth2,
-              height: finalHeight2,
-            });
-          });
-        }
-
-        // Salvar o PDF final com os carimbos
+        // Salvar o PDF final com carimbo
         const pdfBytes = await mergedPdfDoc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
@@ -593,7 +527,9 @@
       }
     }
 
+    // Inicializa o evento do botão de processamento e a funcionalidade de arrastar o carimbo
     processButton.addEventListener('click', processPDFs);
+    initDraggableStamp();
   </script>
 </body>
 </html>
