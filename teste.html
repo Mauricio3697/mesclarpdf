@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Declaração de Comparecimento - Caieiras</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #194275; /* Azul corporativo, mantido */
+      --light-bg: #f2f4f8;
+      --document-bg: #fff;
+      --text-color: #333;
+      --border-color-light: #e0e0e0; /* Nova variável para bordas sutis */
+    }
+    @media print {
+      @page { size: A4; margin: 0; }
+      body { margin: 0; background-color: var(--document-bg); }
+      .no-print { display: none !important; }
+      .document { width: 21cm; height: 29.7cm; padding: 1.5cm; margin: 0; border: none; box-shadow: none; box-sizing: border-box; }
+      .auth-container { display: flex !important; }
+      .search-container { display: none !important; }
+      #profissional-print-view { display: block !important; }
+      #animated-text::after { display: none; }
+    }
+    /* --- MELHORIA: Tipografia profissional --- */
+    body { 
+      font-family: 'Lato', 'Segoe UI', Tahoma, sans-serif; /* Usando a nova fonte Lato */
+      line-height: 1.6; 
+      color: var(--text-color); 
+      max-width: 21cm; 
+      margin: 0 auto; 
+      padding: 20px 0; 
+      background: var(--light-bg); 
+    }
+    .document { 
+      background: var(--document-bg); 
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1); /* Sombra mais pronunciada */
+      min-height: 29.7cm; 
+      width: 21cm; 
+      box-sizing: border-box; 
+      margin: auto; 
+      border-radius: 5px; /* Bordas levemente arredondadas */
+      position: relative; 
+      display: flex; 
+      flex-direction: column; 
+      padding: 1.5cm; /* Padding interno mantido */
+    }
+    .main-content { flex: 1; }
+    
+    /* --- MELHORIA: Cabeçalho estilo "Papel Timbrado" --- */
+    .header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      background: none; /* Fundo removido para um visual mais limpo */
+      padding: 10px 0; /* Padding vertical ajustado */
+      border-bottom: 3px solid var(--primary-color); /* Borda sólida para delimitar */
+      margin-bottom: 30px; /* Maior espaçamento inferior */
+    }
+    .header img { max-height: 80px; } /* Tamanho do logo ajustado */
+    
+    .unidade-container { text-align: center; margin-bottom: 30px; }
+    .unidade { font-size: 16px; font-weight: bold; color: var(--primary-color); }
+    .unidade p { margin: 0; font-size: 14px; color: #666; }
+    
+    /* --- MELHORIA: Título mais destacado --- */
+    .title { 
+      font-size: 24px; /* Tamanho ajustado */
+      font-weight: 700; /* Peso da fonte 'bold' de Lato */
+      color: var(--primary-color); 
+      text-align: center; 
+      margin: 30px 0 40px 0; /* Espaçamento vertical aumentado */
+      letter-spacing: 1.5px; /* Espaçamento entre letras para elegância */
+      text-transform: uppercase; /* Caixa alta para formalidade */
+    }
+
+    .content { font-size: 15px; text-align: justify; margin-bottom: 30px; }
+    .content.typing::after {
+        content: '|';
+        animation: blink 1s step-end infinite;
+        font-weight: bold;
+        color: var(--text-color);
+        margin-left: 2px;
+    }
+    @keyframes blink { from, to { opacity: 1; } 50% { opacity: 0; } }
+    
+    .info-paragraph { margin-bottom: 22px; text-align: left; }
+    .label { font-weight: 700; color: var(--primary-color); margin-right: 8px; font-size: 16px; vertical-align: baseline; }
+    
+    /* --- MELHORIA: Estilo dos campos de preenchimento --- */
+    .value, input.value-input { 
+      font-size: 16px; 
+      padding: 2px 5px; 
+      min-width: 160px; 
+      display: inline-block; 
+      background-color: transparent;
+      border: none;
+      border-bottom: 2px solid var(--border-color-light); /* Borda inferior sutil */
+      border-radius: 0;
+      transition: border-color 0.3s;
+    }
+    input.value-input { width: 250px; }
+    input.value-input:focus, [contenteditable]:focus { 
+      background: none; /* Fundo no focus removido */
+      border-bottom-color: var(--primary-color); /* Borda destaca ao focar */
+      outline: none; 
+    }
+    .cpf-valid { border-bottom-color: #28a745 !important; }
+    .cpf-invalid { border-bottom-color: #dc3545 !important; }
+
+    .validation-message { font-size: 11px; margin-top: 2px; display: none; margin-left: 5px; color: #dc3545; }
+    .service-types { background: #fdfdfd; padding: 20px; border-radius: 5px; text-align: center; margin: 30px 0; border: 1px solid var(--border-color-light); }
+    .service-types-title { font-weight: 700; color: var(--primary-color); font-size: 17px; margin-bottom: 15px; }
+    .checkbox-group { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; }
+    .checkbox-item { display: flex; align-items: center; }
+    .checkbox-item input { transform: scale(1.3); margin-right: 6px; cursor: pointer; }
+    .checkbox-item label { font-size: 15px; cursor: pointer; }
+    #justificativa-container { display: none; margin-top: 20px; text-align: left; }
+    #justificativa { width: 100%; box-sizing: border-box; min-height: 60px; border: 1px solid #ccc; border-radius: 4px; padding: 8px; font-size: 15px; }
+    
+    /* --- MELHORIA: Assinatura mais limpa --- */
+    .signature { 
+      margin-top: auto; 
+      padding-top: 20px; 
+      border-top: 1px solid #000; /* Linha de assinatura preta e fina */
+      width: 60%; /* Largura ajustada */
+      margin-left: auto; 
+      margin-right: auto; 
+      text-align: center; 
+      font-size: 15px; 
+    }
+    .professional-selector { text-align: center; margin-top: 8px; }
+    .search-container { position: relative; margin-bottom: 10px; }
+    .search-input { width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
+    #profissional-print-view { display: none; text-align: center; margin-top: 5px; font-size: 15px; font-weight: 700; }
+    .suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--document-bg); border: 1px solid #ccc; border-top: none; border-radius: 0 0 4px 4px; max-height: 200px; overflow-y: auto; z-index: 1000; display: none; }
+    .suggestion-item { padding: 10px; cursor: pointer; border-bottom: 1px solid #eee; text-align: left; }
+    .suggestion-item:hover { background: #f5f5f5; }
+    
+    .watermark { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-30deg); font-size: 5cm; color: var(--primary-color); opacity: 0.06; pointer-events: none; z-index: 0; font-weight: 700; }
+    
+    /* --- MELHORIA: Rodapé estilo "Papel Timbrado" --- */
+    .footer { 
+      text-align: center; 
+      font-size: 12px; 
+      border-top: 2px solid var(--primary-color); /* Borda sólida para delimitar */
+      padding-top: 15px; 
+      color: #555; /* Cor de texto mais suave */
+      margin-top: 20px; 
+    }
+    .auth-container { display: none; align-items: center; justify-content: center; gap: 15px; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #aaa; }
+    .qr-code { padding: 4px; background: var(--document-bg); }
+    .auth-text { font-size: 9px; text-align: left; color: #555; line-height: 1.4; }
+    
+    .no-print { background: #f0f8ff; padding: 15px; border-left: 5px solid var(--primary-color); border-radius: 5px; text-align: center; margin-top: 20px; }
+    .button-group { display: flex; justify-content: center; margin-top: 15px; gap: 10px; }
+    .print-button, .reset-button { padding: 12px 24px; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background-color 0.2s, transform 0.1s; position: relative; }
+    .print-button:hover, .reset-button:hover { transform: translateY(-1px); }
+    .print-button { background: var(--primary-color); color: var(--document-bg); }
+    .print-button:hover { background: #0e2a4f; }
+    .reset-button { background: #6c757d; color: var(--document-bg); }
+    .reset-button:hover { background: #5a6268; }
+    .print-button.loading .btn-text { visibility: hidden; }
+    .print-button.loading::after { content: ''; position: absolute; width: 20px; height: 20px; top: 0; left: 0; right: 0; bottom: 0; margin: auto; border: 3px solid transparent; border-top-color: #fff; border-right-color: #fff; border-radius: 50%; animation: spin 1s ease infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    .message { margin: 15px auto; padding: 10px; border-radius: 5px; text-align: center; font-weight: bold; display: none; max-width: 21cm; box-sizing: border-box; }
+    .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+  </style>
+  <link rel="icon" href="https://www.caieiras.sp.gov.br/portal/templates/caieiras_2019/favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <div id="message" class="message no-print"></div>
+
+  <div class="document">
+    <div class="main-content">
+      <div class="header">
+        <img src="https://i.imgur.com/A1eWZK0.png" alt="Logo do SUS">
+        <img src="https://i.imgur.com/v7MHC4w.png" alt="Logo da Prefeitura de Caieiras">
+      </div>
+      <div class="unidade-container">
+        <div class="unidade">
+          UBS PORTAL DAS LARANJEIRAS ANTÔNIO DE SOUZA SANTOS
+          <p>CNES: 4737423</p>
+        </div>
+      </div>
+      <div class="title">DECLARAÇÃO DE COMPARECIMENTO</div>
+      
+      <div class="content" id="animated-text"></div>
+
+      <div class="info-paragraph">
+        <span class="label">Nome:</span>
+        <span class="value" id="nome" contenteditable="true" placeholder="Digite o nome completo"></span>
+        <div class="validation-message" id="nome-validation"></div>
+      </div>
+      <div class="info-paragraph">
+        <span class="label">CPF:</span>
+        <input type="text" id="cpf" class="value-input" placeholder="000.000.000-00" maxlength="14">
+        <div class="validation-message" id="cpf-validation"></div>
+      </div>
+      <div class="info-paragraph">
+        <span class="label">Data:</span>
+        <span class="value" id="data" contenteditable="true"></span>
+        <div class="validation-message" id="data-validation"></div>
+      </div>
+      <div class="info-paragraph">
+        <span class="label">Horário:</span>
+        <span class="value" id="horario" contenteditable="true">das 00:00 às 00:00 (período da manhã)</span>
+        <div class="validation-message" id="horario-validation"></div>
+      </div>
+      <div class="info-paragraph">
+        <span class="label">ID da Declaração:</span>
+        <span class="value" id="unique-id" style="font-weight: bold; color: #d9534f; border-bottom: none;"></span>
+      </div>
+      <div class="service-types">
+        <div class="service-types-title">Tipo de Atendimento:</div>
+        <div class="checkbox-group">
+          <div class="checkbox-item"><input type="checkbox" id="consulta"><label for="consulta">Consulta</label></div>
+          <div class="checkbox-item"><input type="checkbox" id="exame"><label for="exame">Exame</label></div>
+          <div class="checkbox-item"><input type="checkbox" id="acompanhante"><label for="acompanhante">Acompanhante</label></div>
+          <div class="checkbox-item"><input type="checkbox" id="retorno"><label for="retorno">Retorno</label></div>
+          <div class="checkbox-item"><input type="checkbox" id="outro"><label for="outro">Outro</label></div>
+        </div>
+        <div id="justificativa-container">
+          <label for="justificativa" class="label">Justificativa:</label>
+          <textarea id="justificativa" placeholder="Descreva a justificativa..."></textarea>
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+   
+      <div class="signature">
+        Assinatura do Profissional
+        <div class="professional-selector">
+          <div class="search-container">
+            <input type="text" class="search-input" id="profissional-search" placeholder="Digite para buscar o profissional...">
+            <div class="suggestions" id="suggestions"></div>
+          </div>
+          <div id="profissional-print-view"></div>
+          <div class="validation-message" id="profissional-validation"></div>
+        </div>
+      </div>
+    </div>
+    
+    <footer class="footer">
+      <p>Caieiras, <span id="data-atual"></span> | Horário de emissão: <span id="hora-atual"></span></p>
+      <div class="auth-container" id="auth-container">
+          <div id="qrcode" class="qr-code"></div>
+          <div class="auth-text">
+              ID DE AUTENTICAÇÃO: <strong id="auth-id-value"></strong>
+              <br>
+              <small>PARA CONFIRMAR A VALIDADE, CONSULTE O REGISTRO NA UBS PORTAL.</small>
+          </div>
+      </div>
+    </footer>
+    <div class="watermark">UBS PORTAL</div>
+  </div>
+  
+  <div class="no-print" style="max-width: 21cm; margin: 20px auto;">
+      <div class="button-group">
+        <button type="button" class="reset-button" onclick="resetForm()">Limpar Formulário</button>
+        <button type="button" class="print-button" id="print-btn" onclick="generateAndPrint()"><span class="btn-text">Registar e Imprimir</span></button>
+      </div>
+    </div>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwyAyqmZlfLVRR8dgjqHTWl_jGYfAID3F_cTqrDsbLkkXDJusdPz9mdXswyzQZP1ejH/exec"; // <-- SUBSTITUA ESTA LINHA PELO SEU NOVO URL
+
+    const profissionais = [
+      'MAURICIO MATHEUS DIAS OLIVEIRA', 'ANDREA RAMOS DA SILVA', 'ALINE RODRIGUES DE SOUZA',
+      'BRUNA SUELEN DE SOUZA MOREIRA', 'BIANCA NICOLETTI', 'EVELLYN APARECIDA MONGE SILVA',
+      'EDVAN WASHINGTON PEREIRA DA SILVA', 'JOSE ADALBERTO AMARAL', 'LIEGE REGINA LOPES REIS ALMEIDA',
+      'MIDDIHAN NASCIMENTO SANTOS DE SOUSA', 'MAURA RAQUEL DA SILVA MACHADO', 'NAIROBI HERNANDEZ CUESTA',
+      'TATIANE DOS SANTOS MACHADO', 'THAIS FERREIRA LIMA DE OLIVEIRA', 'VANESSA CRISTINA PONTES PELIZARI'
+    ];
+    let selectedProfessional = '';
+    
+    // Variáveis para a animação de digitação
+    let typingInterval;
+    const textToAnimate = "Certificamos, para os devidos fins e conforme solicitado, que a pessoa abaixo identificada compareceu a esta Unidade de Saúde na data e horário especificados, tendo recebido o atendimento necessário, seja como paciente ou acompanhante, conforme a situação determinada pelo profissional responsável.";
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeForm();
+      setupEventListeners();
+      updateDateTime();
+      startTypingAnimation(); // Inicia a animação de digitação
+      setInterval(updateDateTime, 60000);
+    });
+    
+    function startTypingAnimation() {
+        const targetElement = document.getElementById('animated-text');
+        let charIndex = 0;
+        
+        if (typingInterval) clearInterval(typingInterval);
+        targetElement.innerHTML = '';
+        targetElement.classList.add('typing');
+
+        const typeWriter = () => {
+            if (charIndex < textToAnimate.length) {
+                targetElement.innerHTML += textToAnimate.charAt(charIndex);
+                charIndex++;
+            } else {
+                clearInterval(typingInterval);
+                targetElement.classList.remove('typing');
+            }
+        };
+        typingInterval = setInterval(typeWriter, 25);
+    }
+
+    function initializeForm() {
+      document.getElementById('outro').addEventListener('change', (e) => {
+        document.getElementById('justificativa-container').style.display = e.target.checked ? 'block' : 'none';
+      });
+      document.querySelectorAll('.checkbox-group input').forEach(cb => cb.addEventListener('change', autoSelectConsultation));
+      document.getElementById('consulta').checked = true;
+    }
+
+    function setupEventListeners() {
+      document.getElementById('profissional-search').addEventListener('input', handleProfessionalSearch);
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) document.getElementById('suggestions').style.display = 'none';
+      });
+      document.getElementById('nome').addEventListener('input', (e) => validateField('nome', e.target.textContent.trim()));
+      document.getElementById('cpf').addEventListener('input', (e) => {
+        let raw = e.target.value.replace(/\D/g, '');
+        e.target.value = formatCPF(raw);
+        validateField('cpf', raw);
+      });
+      document.getElementById('data').addEventListener('input', (e) => validateField('data', e.target.textContent.trim()));
+      document.getElementById('horario').addEventListener('input', (e) => validateField('horario', e.target.textContent.trim()));
+    }
+
+    function handleProfessionalSearch(e) {
+      const suggestions = document.getElementById('suggestions');
+      const query = e.target.value.toLowerCase().trim();
+      if (query.length < 2) { suggestions.style.display = 'none'; return; }
+      const matches = profissionais.filter(prof => prof.toLowerCase().includes(query));
+      suggestions.innerHTML = matches.length ? matches.map(prof => `<div class="suggestion-item" onclick="selectProfessional('${prof.replace(/'/g, "\\'")}')">${prof}</div>`).join('') : '';
+      suggestions.style.display = matches.length ? 'block' : 'none';
+    }
+
+    function selectProfessional(name) {
+      document.getElementById('profissional-search').value = name;
+      document.getElementById('suggestions').style.display = 'none';
+      selectedProfessional = name;
+      validateField('profissional', name);
+    }
+
+    function validateField(fieldName, value) {
+      const validationEl = document.getElementById(`${fieldName}-validation`);
+      let isValid = false, message = '';
+      switch (fieldName) {
+        case 'nome': isValid = value.length >= 3; message = isValid ? '' : 'Nome muito curto.'; break;
+        case 'cpf': isValid = validateCPF(value); message = isValid ? '' : 'CPF inválido.'; break;
+        case 'data': isValid = /^\d{2}\/\d{2}\/\d{4}$/.test(value) && isValidDate(value); message = isValid ? '' : 'Formato DD/MM/AAAA.'; break;
+        case 'horario': isValid = /das\s\d{2}:\d{2}\sàs\s\d{2}:\d{2}/.test(value); message = isValid ? '' : 'Formato "das HH:MM às HH:MM".'; break;
+        case 'profissional': isValid = profissionais.includes(value); message = isValid ? '' : 'Selecione um profissional válido.'; break;
+      }
+      if (validationEl) {
+        validationEl.textContent = message;
+        validationEl.style.display = message ? 'inline' : 'none';
+      }
+      return isValid;
+    }
+
+    function validateCPF(cpf) {
+      cpf = String(cpf).replace(/\D/g, '');
+      if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+      let sum = 0, remainder;
+      for (let i = 1; i <= 9; i++) sum += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+      remainder = (sum * 10) % 11;
+      if (remainder >= 10) remainder = 0;
+      if (remainder !== parseInt(cpf.substring(9, 10))) return false;
+      sum = 0;
+      for (let i = 1; i <= 10; i++) sum += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+      remainder = (sum * 10) % 11;
+      if (remainder >= 10) remainder = 0;
+      return remainder === parseInt(cpf.substring(10, 11));
+    }
+
+    function isValidDate(dateStr) {
+      const [day, month, year] = dateStr.split('/').map(Number);
+      if (year < 1900 || year > 2100) return false;
+      const date = new Date(year, month - 1, day);
+      return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+    }
+
+    function autoSelectConsultation() {
+      if (!document.querySelector('.checkbox-group input:checked')) {
+        document.getElementById('consulta').checked = true;
+      }
+    }
+    
+    function updateDateTime() {
+      const now = new Date();
+      const d = String(now.getDate()).padStart(2, '0'), m = String(now.getMonth() + 1).padStart(2, '0'), y = now.getFullYear();
+      const h = String(now.getHours()).padStart(2, '0'), min = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('data-atual').textContent = `${d}/${m}/${y}`;
+      document.getElementById('hora-atual').textContent = `${h}:${min}`;
+      const dataField = document.getElementById('data');
+      if (!dataField.textContent.trim()) dataField.textContent = `${d}/${m}/${y}`;
+      const horarioField = document.getElementById('horario');
+      if (horarioField.textContent.includes('00:00')) {
+        const currentHour = now.getHours();
+        if (currentHour < 12) horarioField.textContent = 'das 07:00 às 12:00 (período da manhã)';
+        else if (currentHour < 18) horarioField.textContent = 'das 13:00 às 17:00 (período da tarde)';
+        else horarioField.textContent = 'das 18:00 às 21:00 (período da noite)';
+      }
+    }
+
+    function formatCPF(cpf) {
+      cpf = cpf.replace(/\D/g, '').slice(0, 11);
+      if (cpf.length > 9) return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+      if (cpf.length > 6) return cpf.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+      if (cpf.length > 3) return cpf.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+      return cpf;
+    }
+
+    function showMessage(text, isSuccess) {
+      const msg = document.getElementById('message');
+      msg.textContent = text;
+      msg.className = `message no-print ${isSuccess ? 'success' : 'error'}`;
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 5000);
+    }
+    
+    function generateUniqueID() {
+        const now = new Date();
+        const datePart = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`;
+        const timePart = `${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+        const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+        return `UBSPL-${datePart}${timePart}-${randomPart}`;
+    }
+
+    // --- FUNÇÃO CORRIGIDA ---
+    function saveData(data) {
+        if (!SCRIPT_URL.startsWith("https://")) {
+            console.error('O URL do Google Apps Script não parece válido.');
+            showMessage('Aviso: O registo online da declaração falhou (URL inválido). A impressão prosseguirá.', false);
+            return;
+        }
+        
+        // Envia a requisição e captura eventuais erros de rede, sem bloquear a execução
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(data),
+            headers: { 'Content-Type': 'application/json' },
+        }).catch(error => {
+            console.error('Erro ao enviar para o Google Script:', error);
+            showMessage('Aviso: O registo online da declaração falhou (erro de rede). A impressão prosseguirá.', false);
+        });
+    }
+    
+    function validateFormBeforePrint() {
+        const fields = {
+            nome: document.getElementById('nome').textContent.trim(),
+            cpf: document.getElementById('cpf').value.replace(/\D/g, ''),
+            data: document.getElementById('data').textContent.trim(),
+            horario: document.getElementById('horario').textContent.trim(),
+            profissional: selectedProfessional || document.getElementById('profissional-search').value
+        };
+        const errors = Object.keys(fields).filter(key => !validateField(key, fields[key]));
+        if (!document.querySelector('.checkbox-group input:checked')) errors.push('tipo de atendimento');
+        if(errors.length > 0) {
+            showMessage(`Corrija os campos inválidos: ${errors.join(', ')}.`, false);
+            return false;
+        }
+        return true;
+    }
+
+    // --- FUNÇÃO CORRIGIDA ---
+    function generateAndPrint() {
+  if (!validateFormBeforePrint()) return;
+
+  const printButton = document.getElementById('print-btn');
+  printButton.classList.add('loading');
+  printButton.disabled = true;
+
+  try {
+    const uniqueID = generateUniqueID();
+    const qrCodeContainer = document.getElementById('qrcode');
+    qrCodeContainer.innerHTML = '';
+    document.getElementById('unique-id').textContent = uniqueID;
+    document.getElementById('auth-id-value').textContent = uniqueID;
+
+    new QRCode(qrCodeContainer, {
+      text: `ID: ${uniqueID}`,
+      width: 60,
+      height: 60,
+      correctLevel: QRCode.CorrectLevel.H
+    });
+
+    const professional = selectedProfessional || document.getElementById('profissional-search').value;
+    document.getElementById('profissional-print-view').textContent = professional;
+
+    const declarationData = {
+      ID: uniqueID,
+      Nome: document.getElementById('nome').textContent.trim(),
+      CPF: document.getElementById('cpf').value,
+      DataAtendimento: document.getElementById('data').textContent.trim(),
+      HorarioAtendimento: document.getElementById('horario').textContent.trim(),
+      TipoAtendimento: Array.from(document.querySelectorAll('.checkbox-group input:checked')).map(cb => cb.labels[0].textContent).join(', '),
+      Justificativa: document.getElementById('justificativa').value.trim(),
+      Profissional: professional,
+      DataEmissao: document.getElementById('data-atual').textContent,
+      HoraEmissao: document.getElementById('hora-atual').textContent
+    };
+
+    // Salva em segundo plano
+    saveData(declarationData);
+
+    // Finaliza a digitação, se ainda estiver animando
+    const animatedText = document.getElementById('animated-text');
+    animatedText.classList.remove('typing');
+    animatedText.textContent = textToAnimate;
+
+    // Aguarda um pequeno tempo para renderizar completamente
+    showMessage('Preparando para impressão...', true);
+    setTimeout(() => {
+      window.print();
+      printButton.classList.remove('loading');
+      printButton.disabled = false;
+    }, 300); // Tempo suficiente para renderizar o texto
+
+  } catch (error) {
+    console.error("Ocorreu um erro ao gerar a declaração:", error);
+    showMessage("Erro ao gerar declaração. Veja o console.", false);
+    printButton.classList.remove('loading');
+    printButton.disabled = false;
+  }
+}
+
+  </script>
+</body>
+</html>
