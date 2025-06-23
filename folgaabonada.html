@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requerimento de Folga</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 21cm; min-height: 29.7cm; background: #fff; padding: 1.5cm; box-shadow: 0 0 10px rgba(0,0,0,0.1); box-sizing: border-box; display: flex; flex-direction: column; }
+        .content { flex-grow: 1; }
+        .header { width: 100%; margin-bottom: 20px; }
+        .header img { width: 100%; height: auto; }
+        .title { text-align: center; font-size: 22px; font-weight: bold; margin: 40px 0; padding: 10px; cursor: text; border: 1px dashed transparent; }
+        .title:hover { border: 1px dashed #ccc; }
+        .title:focus { outline: 1px solid #0056b3; }
+        .form-group { margin-bottom: 25px; display: flex; align-items: center; }
+        .form-group label { font-weight: bold; margin-right: 10px; min-width: 100px; }
+        .form-group input { width: 100%; border: none; border-bottom: 1px solid #000; padding: 8px; font-size: 18px; text-transform: capitalize; }
+        .form-group input:focus { outline: none; }
+        .signature-section { margin-top: 60px; display: flex; justify-content: space-between; }
+        .signature-line { border-top: 1px solid #000; width: 45%; padding-top: 5px; }
+        .authorization-section { margin-top: 50px; border: 1px solid #000; padding: 15px; }
+        .authorization-section p { margin: 10px 0; }
+        .footer { margin-top: 40px; text-align: right; font-size: 16px; color: #333; }
+        .print-button { display: block; width: 200px; margin: 50px auto 0; padding: 15px; background-color: #0056b3; color: white; border: none; border-radius: 5px; font-size: 18px; cursor: pointer; }
+        @media print { body, .container { background-color: #fff; box-shadow: none; padding: 1cm; margin: 0; } .title { border-color: transparent; } .print-button, .title:hover { display: none; } }
+    </style>
+</head>
+<body>
+    <div class="container" id="form-container">
+        <div class="content">
+            <div class="header">
+                <img src="https://i.imgur.com/xkDHE6r.png" alt="Logo Caieiras">
+            </div>
+            <div class="title" contenteditable="true">REQUERIMENTO DE FOLGA ABONADA</div>
+            <form>
+                <div class="form-group">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" list="funcionarios" autocomplete="off">
+                    <datalist id="funcionarios">
+                        <option value="Mauricio Matheus Dias Oliveira">
+                        <option value="ANDREA RAMOS DA SILVA">
+                        <option value="ADRIANA BARBOSA RIBEIRO BRITO">
+                        <option value="ANDREIA APARECIDA ROSA OLIVEIRA">
+                        <option value="ADRIANA CASSIA MORAES DOS SANTOS">
+                        <option value="ALINE RODRIGUES DE SOUZA">
+                        <option value="ANNA LUIZA VESPASIANO SANTOS">
+                        <option value="BRUNA SUELEN DE SOUZA MOREIRA">
+                        <option value="BIANCA NICOLETTI">
+                        <option value="BRUNA ALVES DE VASCONCELOS">
+                        <option value="DEBORA ANTONIA PEREIRA">
+                        <option value="DANIELE APARECIDA AFONSO">
+                        <option value="EVELLYN APARECIDA MONGE SILVA">
+                        <option value="EDVAN WASHINGTON PEREIRA DA SILVA">
+                        <option value="FELIX THEODORO">
+                        <option value="FERNANDA MARCELINO DUTRA DE OLIVEIRA">
+                        <option value="JESSICA DE OLIVEIRA CRUZ">
+                        <option value="JOSE ADALBERTO AMARAL">
+                        <option value="KELLY SANTOS DE SOUZA AVELAR">
+                        <option value="KESIA SERAFIM LOPES">
+                        <option value="LUANA DOS SANTOS MONTEIRO">
+                        <option value="LAUREANY VASQUES DE BRITO">
+                        <option value="LIEGE REGINA LOPES REIS ALMEIDA">
+                        <option value="LUCINEIDE NASCIMENTO DOS SANTOS">
+                        <option value="MARCIA CRUZ DOS SANTOS">
+                        <option value="MONICA MURAWJOW ABADELI">
+                        <option value="MARINA GABRIELLI DE CASTRO SANTOS">
+                        <option value="MIDDIHAN NASCIMENTO SANTOS DE SOUSA">
+                        <option value="MAYLON AVELINO FAVERIN">
+                        <option value="MAURA RAQUEL DA SILVA MACHADO">
+                        <option value="NADIELI APARECIDA DA SILVA">
+                        <option value="NAIROBI HERNANDEZ CUESTA">
+                        <option value="PATRICIA ROBERTA MUTAFCI GHIZZI">
+                        <option value="REGINA BENEDICTO">
+                        <option value="SOLANGE FERREIRA DA SILVA RAMOS">
+                        <option value="SUSANA NUNES DA SILVA">
+                        <option value="TATIANE DOS SANTOS MACHADO">
+                        <option value="TAIS DINIZ DE OLIVEIRA">
+                        <option value="THAIS FERREIRA LIMA DE OLIVEIRA">
+                        <option value="VANESSA CRISTINA DA SILVA PINHEIRO">
+                        <option value="VITOR HENRIQUE SILVA CAMPOS">
+                        <option value="VANESSA CRISTINA PONTES PELIZARI">
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label for="data">Data a usufruir:</label>
+                    <input type="date" id="data" name="data" placeholder="dd/mm/aaaa">
+                </div>
+                <div class="form-group">
+                    <label for="cargo">Cargo/Função:</label>
+                    <input type="text" id="cargo" name="cargo" list="cargos" autocomplete="off">
+                    <datalist id="cargos">
+                        <option value="Enfermeira">
+                        <option value="Agente Comunitário de Saúde">
+                        <option value="Auxiliar de Enfermagem">
+                        <option value="Técnico de Enfermagem">
+                        <option value="Auxiliar Administrativo">
+                        <option value="Gerente">
+                        <option value="Agente de Limpeza">
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label for="lotado">Lotado:</label>
+                    <input type="text" id="lotado" name="lotado" list="unidades" autocomplete="off">
+                    <datalist id="unidades">
+                        <option value="UBS PORTAL DAS LARANJEIRAS">
+                        <option value="UBS JARDIM VITÓRIA">
+                        <option value="UBS NOVA ERA">
+                        <option value="UBS MARCELINO">
+                    </datalist>
+                </div>
+                <div class="signature-section">
+                    <div class="signature-line">Ass. Funcionário:</div>
+                    <div class="signature-line">Ass. Superior Imediato:</div>
+                </div>
+                <div class="authorization-section">
+                    <b>Para uso do Apoiador/Diretor em Saúde:</b>
+                    <p>( ) Autorizado</p>
+                    <p>( ) Não autorizado. Motivo: _______________________________</p>
+                    <div style="text-align:center; margin-top:40px;">
+                        <div style="display:inline-block; border-top:1px solid #000; width:60%;">Assinatura</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="footer" id="footer-date"></div>
+        <button class="print-button" onclick="window.print()">Imprimir Requerimento</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            function toTitleCase(str) {
+                return str.toLowerCase().split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            }
+            ['nome','cargo','lotado'].forEach(id => {
+                const input = document.getElementById(id);
+                input.addEventListener('change', () => {
+                    let text = toTitleCase(input.value);
+                    input.value = '';
+                    let i = 0;
+                    const speed = 100;
+                    const timer = setInterval(() => {
+                        input.value += text.charAt(i);
+                        i++;
+                        if (i >= text.length) clearInterval(timer);
+                    }, speed);
+                });
+            });
+            const now = new Date();
+            const dateOpts = { year:'numeric', month:'long', day:'numeric' };
+            const timeOpts = { hour:'2-digit', minute:'2-digit', second:'2-digit' };
+            const formattedDate = new Intl.DateTimeFormat('pt-BR', dateOpts).format(now);
+            const formattedTime = new Intl.DateTimeFormat('pt-BR', timeOpts).format(now);
+            document.getElementById('footer-date').textContent = `Caieiras, ${formattedDate} — Emitido às ${formattedTime}`;
+        });
+    </script>
+</body>
+</html>
