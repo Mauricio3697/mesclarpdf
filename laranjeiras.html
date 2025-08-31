@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Declaração de Comparecimento — Formal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --blue:#0f4a7a;
+      --muted:#666;
+      --paper:#fff;
+      --page-width:21cm;
+      --page-height:29.7cm;
+      --base-font:18px;
+    }
+    html,body{height:100%;margin:0;background:#f3f6f9;font-family:'Lato',system-ui,Arial;color:#222}
+    .sheet{
+      width:var(--page-width);
+      min-height:var(--page-height);
+      margin:20px auto;
+      background:var(--paper);
+      padding:26mm 22mm 26mm 22mm;
+      box-shadow:0 6px 18px rgba(0,0,0,0.06);
+      position:relative;
+      box-sizing:border-box;
+      font-size:var(--base-font);
+      line-height:1.65;
+      color:#222;
+      z-index:1;
+    }
+    .header{display:flex;align-items:center;justify-content:space-between;border-bottom:4px solid var(--blue);padding-bottom:10px}
+    .logo-small{height:72px;object-fit:contain}
+    .govtext{flex:1;text-align:center;padding-left:10px}
+    .govtext h1{margin:0;font-size:16px;font-weight:800;letter-spacing:0.6px}
+    .govtext p{margin:0;font-size:13px;color:var(--muted)}
+    .title{font-size:36px;text-align:center;color:var(--blue);font-weight:900;margin:28px 0 18px;text-transform:uppercase;letter-spacing:1.6px}
+    .body{font-size:20px;color:#111}
+    .body p{margin:0 0 14px}
+    .body .strong{font-weight:800;color:#000}
+    .cid{margin-top:14px;font-weight:700;color:var(--muted);font-size:16px}
+    .cid .code{font-weight:900;color:#000;margin-right:8px}
+    .cid .desc{font-weight:600}
+    .cid small{display:block;color:var(--muted);font-weight:400;margin-top:6px}
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+      width: 60%;
+      max-width: 680px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .watermark-text {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 42mm;
+      font-size: 13px;
+      color: rgba(0,0,0,0.24);
+      font-weight: 700;
+      text-align: center;
+      z-index: 0;
+      pointer-events: none;
+      white-space: pre-line;
+    }
+    .signature-area{
+      position:absolute;
+      left:50%;
+      top:56%;
+      transform:translate(-50%,-50%);
+      text-align:center;
+      width:52%;
+      max-width:460px;
+      z-index:2;
+    }
+    .signature-line{height:92px;border-bottom:1px solid #000;margin-bottom:8px}
+    .signature-name{font-weight:900;font-size:16px;position:relative;z-index:3}
+    .signature-role{font-size:13px;color:var(--muted);position:relative;z-index:3}
+    .stamp {
+      position: absolute;
+      top: -34px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-8deg);
+      width: 160px;
+      opacity: 0.88;
+      mix-blend-mode: multiply;
+      pointer-events: none;
+      z-index:2;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .footer{position:absolute;left:22mm;bottom:18mm;font-size:14px;color:var(--muted);width:calc(var(--page-width) - 44mm);box-sizing:border-box;text-align:left;border-top:1px solid #eee;padding-top:6px}
+    .auth-inline{float:right;font-weight:700;color:#333}
+    .controls{display:flex;flex-direction:column;gap:8px;padding:12px;background:#fff;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.06);max-width:21cm;margin:8px auto}
+    .controls label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
+    .controls input,.controls select{padding:8px;border:1px solid #ddd;border-radius:4px;font-size:15px}
+    .controls .row{display:flex;gap:10px}
+    .controls .row > *{flex:1}
+    .muted-note{font-size:13px;color:var(--muted)}
+    .controls .centered-prof { display:flex;flex-direction:column;align-items:center; }
+    .controls .centered-prof input[type="text"]{ max-width:360px;text-align:center; }
+    .message { margin: 12px auto; padding:10px; max-width:21cm; box-sizing:border-box; display:none; border-radius:6px; font-weight:700; text-align:center;}
+    .message.success{ background:#d4edda; color:#155724; border:1px solid #c3e6cb;}
+    .message.error{ background:#f8d7da; color:#721c24; border:1px solid #f5c6cb;}
+    .button-row{display:flex;gap:8px}
+    .btn{padding:10px 14px;border-radius:6px;border:0;color:#fff;font-weight:700;cursor:pointer}
+    .btn-primary{background:var(--blue)}
+    .btn-print{background:#2f9f4a}
+
+    @media print{
+      body{background:transparent}
+      .sheet{box-shadow:none;margin:0;padding:18mm;border-radius:0}
+      .controls{display:none}
+      @page{size:A4;margin:0}
+      .watermark {
+        opacity: 0.10 !important;
+        width: 66% !important;
+        filter: grayscale(100%) contrast(110%) !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .watermark-text {
+        color: rgba(0,0,0,0.34) !important;
+        font-size: 12px !important;
+      }
+      .stamp {
+        mix-blend-mode: normal !important;
+        filter: grayscale(100%) contrast(130%) brightness(95%) !important;
+        opacity: 0.98 !important;
+        width: 34% !important;
+        left: 50%;
+        transform: translateX(-50%) rotate(-8deg);
+        z-index:2;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .signature-name, .signature-role {
+        z-index:3 !important;
+        position:relative !important;
+      }
+      img { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="message" class="message" role="status" aria-live="polite"></div>
+
+  <div class="sheet" id="doc">
+    <img class="watermark" src="https://i.imgur.com/fIO428k.png" alt="Marca d'água oficial" crossorigin="anonymous" />
+    <div class="watermark-text">
+      CNES: 2085879 · AVENIDA PAULICEIA 360 · (11) 4899-3367
+      <br>PARA CONFIRMAR AUTENTICIDADE
+    </div>
+
+    <div class="header">
+      <div class="left"><img class="logo-small" id="logo-left" src="https://i.imgur.com/v7MHC4w.png" alt="Brasão Prefeitura"></div>
+      <div class="govtext">
+        <h1>PREFEITURA DE CAIEIRAS<br>SECRETARIA MUNICIPAL DA SAÚDE</h1>
+        <p>UNIDADE BÁSICA DE SAÚDE — UBS LARANJEIRAS</p>
+      </div>
+      <div class="right"><img class="logo-small" id="logo-right" src="https://i.imgur.com/A1eWZK0.png" alt="SUS"></div>
+    </div>
+
+    <div class="title">Declaração de Comparecimento</div>
+
+    <div class="body" id="body-text">
+      <p>Declaramos, para os devidos fins, que <span class="strong" id="ex-paciente">NOME COMPLETO DO(A) PACIENTE</span>, portador(a) do CPF nº <span class="strong" id="ex-cpf">000.000.000-00</span>, compareceu à <span class="strong" id="ex-unidade">UBS Laranjeiras</span>, na data de <span class="strong" id="ex-data">DD/MM/AAAA</span>, no período compreendido entre <span class="strong" id="ex-hora-inicio">hh:mm</span> e <span class="strong" id="ex-hora-fim">hh:mm</span>, para a realização de <span class="strong" id="ex-procedimento">procedimento</span>.</p>
+      <p class="cid">CID: <span class="code" id="ex-cid">---</span> <span class="desc" id="ex-cid-desc">Descrição detalhada do procedimento / motivo</span>
+        <small>OBS.: Verificar e registrar o CID conforme documentação clínica e tabela oficial vigente.</small>
+      </p>
+    </div>
+
+    <div class="signature-area" id="signature-area">
+      <div class="signature-line" id="signature-line"></div>
+      <div class="signature-name" id="sig-name">NOME DO PROFISSIONAL</div>
+      <div class="signature-role" id="sig-role">UBS Laranjeiras</div>
+      <img id="stamp-img" src="https://i.imgur.com/lLAQqeK.png" alt="Carimbo Oficial" class="stamp" crossorigin="anonymous">
+    </div>
+
+    <div class="footer">
+      Caieiras - SP, <span id="footer-date">DD de mês de AAAA</span>
+      <span class="auth-inline">ID DE AUTENTICAÇÃO: <strong id="auth-id-value">—</strong></span>
+    </div>
+  </div>
+
+  <div class="controls no-print" aria-hidden="false">
+    <div class="row">
+      <div>
+        <label for="input-nome">Nome do(a) paciente</label>
+        <input type="text" id="input-nome" value="Daniel Santana da Silva" />
+      </div>
+      <div>
+        <label for="input-cpf">CPF</label>
+        <input type="text" id="input-cpf" value="000.247.048-00" />
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="input-procedimento">Procedimento / Motivo</label>
+        <select id="input-procedimento">
+          <option value="Exame laboratorial de sangue" data-cid="Z01.0" data-desc="Exame laboratorial de rotina">Exame de sangue</option>
+          <option value="Vacinação" data-cid="Z23" data-desc="Vacinação profilática">Vacinação</option>
+          <option value="Consulta médica geral" data-cid="Z00.0" data-desc="Exame clínico de rotina / avaliação médica">Consulta geral</option>
+          <option value="Administração de medicação" data-cid="Z76.0" data-desc="Procedimento de administração de medicação">Medicação</option>
+          <option value="Acompanhante" data-cid="Z76.3" data-desc="Registro de acompanhante no atendimento">Acompanhante</option>
+          <option value="Exame preventivo de Papanicolau" data-cid="Z12.4" data-desc="Rastreamento para neoplasia do colo uterino (Papanicolau)">Exame preventivo de Papanicolau</option>
+        </select>
+      </div>
+      <div class="centered-prof">
+        <label for="input-profissional">Nome do profissional (assinatura)</label>
+        <input type="text" id="input-profissional" value="Mauricio Matheus Dias Oliveira" />
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="input-data">Data do atendimento</label>
+        <input type="date" id="input-data" />
+      </div>
+      <div>
+        <label for="input-hora-inicio">Horário de início</label>
+        <input type="time" id="input-hora-inicio" />
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="input-hora-fim">Horário de término</label>
+        <input type="time" id="input-hora-fim" />
+      </div>
+      <div>
+        <label>Opções</label>
+        <div class="button-row">
+          <button id="apply" class="btn btn-primary">Aplicar</button>
+          <button id="regprint" class="btn btn-print">Registrar e Imprimir</button>
+        </div>
+      </div>
+    </div>
+    <div class="muted-note">Ao imprimir, o sistema registrará automaticamente a declaração no endpoint configurado.</div>
+  </div>
+
+<script>
+/* ========================================================================== */
+/* ============================ CONFIGURAÇÃO ================================ */
+/*                                                                            */
+/*      A SUA URL DO GOOGLE APPS SCRIPT FOI INSERIDA ABAIXO                   */
+/*                                                                            */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzvcfGB4B5-xoX2yEj8OOxShb81N_vgeitnUyWJV2o-b88yzhB_dsJJYk8tAvX6c6K/exec';
+/*                                                                            */
+/* ========================================================================== */
+/* ========================================================================== */
+
+
+/* Seleção de Elementos do DOM */
+const inputNome = document.getElementById('input-nome');
+const inputCpf = document.getElementById('input-cpf');
+const inputProc = document.getElementById('input-procedimento');
+const inputProf = document.getElementById('input-profissional');
+const inputData = document.getElementById('input-data');
+const inputHoraInicio = document.getElementById('input-hora-inicio');
+const inputHoraFim = document.getElementById('input-hora-fim');
+const exPaciente = document.getElementById('ex-paciente');
+const exCpf = document.getElementById('ex-cpf');
+const exUnidade = document.getElementById('ex-unidade');
+const exData = document.getElementById('ex-data');
+const exHoraInicio = document.getElementById('ex-hora-inicio');
+const exHoraFim = document.getElementById('ex-hora-fim');
+const exProc = document.getElementById('ex-procedimento');
+const exCid = document.getElementById('ex-cid');
+const exCidDesc = document.getElementById('ex-cid-desc');
+const sigName = document.getElementById('sig-name');
+const footerDate = document.getElementById('footer-date');
+const authValueEl = document.getElementById('auth-id-value');
+const messageEl = document.getElementById('message');
+const stampImg = document.getElementById('stamp-img');
+const regPrintBtn = document.getElementById('regprint');
+
+/* Variáveis de estado */
+let ultimoIdRegistrado = null;
+let estaRegistrando = false;
+
+/* Funções Auxiliares */
+const showMessage = (text, isSuccess = true) => {
+  messageEl.textContent = text;
+  messageEl.className = `message ${isSuccess ? 'success' : 'error'}`;
+  messageEl.style.display = 'block';
+  setTimeout(() => { messageEl.style.display = 'none'; }, 4500);
+};
+
+const pad = (n) => String(n).padStart(2, '0');
+
+const formatDateLong = (d) => {
+  const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+};
+
+/* Lógica Principal */
+function preencherCamposComDataAtual() {
+  const agora = new Date();
+  if (!inputData.value) inputData.valueAsDate = agora;
+  if (!inputHoraInicio.value) inputHoraInicio.value = `${pad(agora.getHours())}:${pad(agora.getMinutes())}`;
+  if (!inputHoraFim.value) {
+    const maisTarde = new Date(agora.getTime() + 30 * 60000); // 30 minutos depois
+    inputHoraFim.value = `${pad(maisTarde.getHours())}:${pad(maisTarde.getMinutes())}`;
+  }
+}
+
+function aplicarValores() {
+  const nome = inputNome.value.trim() || 'NOME COMPLETO DO(A) PACIENTE';
+  const cpf = inputCpf.value.trim() || '000.000.000-00';
+  const selectedOption = inputProc.selectedOptions[0];
+  const procedimento = selectedOption.textContent || 'Procedimento';
+  const cid = selectedOption.dataset.cid || '---';
+  const cidDesc = selectedOption.dataset.desc || '';
+  const profissional = inputProf.value.trim() || 'NOME DO PROFISSIONAL';
+  let dataVal = inputData.value;
+  let horaInicioVal = inputHoraInicio.value;
+  let horaFimVal = inputHoraFim.value;
+
+  if (!dataVal || !horaInicioVal || !horaFimVal) {
+    preencherCamposComDataAtual();
+    dataVal = inputData.value;
+    horaInicioVal = inputHoraInicio.value;
+    horaFimVal = inputHoraFim.value;
+  }
+  
+  exPaciente.textContent = nome;
+  exCpf.textContent = cpf;
+  const [yyyy, mm, dd] = dataVal.split('-');
+  exData.textContent = `${dd}/${mm}/${yyyy}`;
+  exHoraInicio.textContent = horaInicioVal;
+  exHoraFim.textContent = horaFimVal;
+  exProc.textContent = procedimento;
+  exCid.textContent = cid;
+  exCidDesc.textContent = cidDesc;
+  sigName.textContent = profissional;
+  const dateObj = new Date(`${dataVal}T00:00:00`);
+  footerDate.textContent = formatDateLong(dateObj);
+}
+
+function gerarIdUnico() {
+  const now = new Date();
+  const datePart = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
+  const timePart = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  const rndPart = Math.random().toString(36).substring(2, 7).toUpperCase();
+  return `UBS-${datePart}${timePart}-${rndPart}`;
+}
+
+async function enviarParaPlanilha(dataObj) {
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(dataObj)
+    });
+    return { ok: true };
+  } catch (error) {
+    console.error('Falha ao enviar dados:', error);
+    return { ok: false, error: error };
+  }
+}
+
+function coletarDadosParaRegistro(id) {
+  return {
+      ID: uniqueID,
+      Nome: document.getElementById('nome').textContent.trim(),
+      CPF: document.getElementById('cpf').value,
+    
+  };
+}
+
+async function registrarDeclaracao(forcarNovoRegistro = false) {
+  if (estaRegistrando) return null;
+  if (ultimoIdRegistrado && !forcarNovoRegistro) return ultimoIdRegistrado;
+
+  estaRegistrando = true;
+  const id = gerarIdUnico();
+  const payload = coletarDadosParaRegistro(id);
+  
+  try {
+    const res = await enviarParaPlanilha(payload);
+    ultimoIdRegistrado = id;
+    authValueEl.textContent = id;
+    if (res.ok) {
+      showMessage(`Declaração registrada com sucesso (ID: ${id})`);
+    } else {
+      showMessage(`Registro falhou. Salvo com ID local: ${id}`, false);
+    }
+    return id;
+  } finally {
+    estaRegistrando = false;
+  }
+}
+
+function validarCampos() {
+  if (!inputNome.value.trim()) {
+    showMessage('Preencha o nome do paciente.', false);
+    return false;
+  }
+  if (!inputCpf.value.trim()) {
+    showMessage('Preencha o CPF.', false);
+    return false;
+  }
+  return true;
+}
+
+async function acaoRegistrarEImprimir() {
+  if (!validarCampos()) return;
+  
+  regPrintBtn.disabled = true;
+  regPrintBtn.textContent = 'Registrando...';
+  
+  aplicarValores();
+  await registrarDeclaracao(true);
+  
+  setTimeout(() => {
+    window.print();
+    regPrintBtn.disabled = false;
+    regPrintBtn.textContent = 'Registrar e Imprimir';
+  }, 250);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('apply').addEventListener('click', aplicarValores);
+  regPrintBtn.addEventListener('click', acaoRegistrarEImprimir);
+  
+  window.addEventListener('beforeprint', () => {
+    aplicarValores();
+    registrarDeclaracao(false);
+  });
+
+  preencherCamposComDataAtual();
+  aplicarValores();
+});
+</script>
+</body>
+</html>
