@@ -49,7 +49,7 @@
       transform: translate(-50%,-50%);
       width: 60%;
       max-width: 680px;
-      opacity: 0.15;
+      opacity: 0.0;
       pointer-events: none;
       z-index: 0;
       -webkit-print-color-adjust: exact;
@@ -153,7 +153,7 @@
   <div class="sheet" id="doc">
     <img class="watermark" src="https://i.imgur.com/fIO428k.png" alt="Marca d'água oficial" crossorigin="anonymous" />
     <div class="watermark-text">
-      CNES: 2085879 · AVENIDA PAULICEIA 360 · (11) 4899-3367
+      CNES: 2085879 · AVENIDA PAULICÉIA 360 · (11) 4899-3367
       <br>PARA CONFIRMAR AUTENTICIDADE
     </div>
 
@@ -171,7 +171,7 @@
     <div class="body" id="body-text">
       <p>Declaramos, para os devidos fins, que <span class="strong" id="ex-paciente">NOME COMPLETO DO(A) PACIENTE</span>, portador(a) do CPF nº <span class="strong" id="ex-cpf">000.000.000-00</span>, compareceu à <span class="strong" id="ex-unidade">UBS Laranjeiras</span>, na data de <span class="strong" id="ex-data">DD/MM/AAAA</span>, no período compreendido entre <span class="strong" id="ex-hora-inicio">hh:mm</span> e <span class="strong" id="ex-hora-fim">hh:mm</span>, para a realização de <span class="strong" id="ex-procedimento">procedimento</span>.</p>
       <p class="cid">CID: <span class="code" id="ex-cid">---</span> <span class="desc" id="ex-cid-desc">Descrição detalhada do procedimento / motivo</span>
-        <small>OBS.: Verificar e registrar o CID conforme documentação clínica e tabela oficial vigente.</small>
+        <small>OBS.: Verificado e registrado o CID conforme documentação clínica e tabela oficial vigente.</small>
       </p>
     </div>
 
@@ -192,7 +192,7 @@
     <div class="row">
       <div>
         <label for="input-nome">Nome do(a) paciente</label>
-        <input type="text" id="input-nome" value="Daniel Santana da Silva" />
+        <input type="text" id="input-nome" value="Mauricio Matheus Dias Oliveira" />
       </div>
       <div>
         <label for="input-cpf">CPF</label>
@@ -203,7 +203,7 @@
       <div>
         <label for="input-procedimento">Procedimento / Motivo</label>
         <select id="input-procedimento">
-          <option value="Exame laboratorial de sangue" data-cid="Z01.0" data-desc="Exame laboratorial de rotina">Exame de sangue</option>
+          <option value="Exame laboratorial de sangue" data-cid="Z01.0" data-desc="Exame laboratorial de rotina ('Check up')">Exame de sangue</option>
           <option value="Vacinação" data-cid="Z23" data-desc="Vacinação profilática">Vacinação</option>
           <option value="Consulta médica geral" data-cid="Z00.0" data-desc="Exame clínico de rotina / avaliação médica">Consulta geral</option>
           <option value="Administração de medicação" data-cid="Z76.0" data-desc="Procedimento de administração de medicação">Medicação</option>
@@ -243,16 +243,9 @@
   </div>
 
 <script>
-/* ========================================================================== */
 /* ============================ CONFIGURAÇÃO ================================ */
-/*                                                                            */
-/*      A SUA URL DO GOOGLE APPS SCRIPT FOI INSERIDA ABAIXO                   */
-/*                                                                            */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzvcfGB4B5-xoX2yEj8OOxShb81N_vgeitnUyWJV2o-b88yzhB_dsJJYk8tAvX6c6K/exec';
-/*                                                                            */
-/* ========================================================================== */
-/* ========================================================================== */
-
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyAyqmZlfLVRR8dgjqHTWl_jGYfAID3F_cTqrDsbLkkXDJusdPz9mdXswyzQZP1ejH/exec';
+/* ========================================================================= */
 
 /* Seleção de Elementos do DOM */
 const inputNome = document.getElementById('input-nome');
@@ -264,7 +257,6 @@ const inputHoraInicio = document.getElementById('input-hora-inicio');
 const inputHoraFim = document.getElementById('input-hora-fim');
 const exPaciente = document.getElementById('ex-paciente');
 const exCpf = document.getElementById('ex-cpf');
-const exUnidade = document.getElementById('ex-unidade');
 const exData = document.getElementById('ex-data');
 const exHoraInicio = document.getElementById('ex-hora-inicio');
 const exHoraFim = document.getElementById('ex-hora-fim');
@@ -275,14 +267,12 @@ const sigName = document.getElementById('sig-name');
 const footerDate = document.getElementById('footer-date');
 const authValueEl = document.getElementById('auth-id-value');
 const messageEl = document.getElementById('message');
-const stampImg = document.getElementById('stamp-img');
 const regPrintBtn = document.getElementById('regprint');
 
-/* Variáveis de estado */
 let ultimoIdRegistrado = null;
 let estaRegistrando = false;
 
-/* Funções Auxiliares */
+/* Funções auxiliares */
 const showMessage = (text, isSuccess = true) => {
   messageEl.textContent = text;
   messageEl.className = `message ${isSuccess ? 'success' : 'error'}`;
@@ -291,23 +281,23 @@ const showMessage = (text, isSuccess = true) => {
 };
 
 const pad = (n) => String(n).padStart(2, '0');
-
 const formatDateLong = (d) => {
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
   return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
 };
 
-/* Lógica Principal */
+/* Preenche campos com data/hora padrão */
 function preencherCamposComDataAtual() {
   const agora = new Date();
   if (!inputData.value) inputData.valueAsDate = agora;
   if (!inputHoraInicio.value) inputHoraInicio.value = `${pad(agora.getHours())}:${pad(agora.getMinutes())}`;
   if (!inputHoraFim.value) {
-    const maisTarde = new Date(agora.getTime() + 30 * 60000); // 30 minutos depois
+    const maisTarde = new Date(agora.getTime() + 30 * 60000);
     inputHoraFim.value = `${pad(maisTarde.getHours())}:${pad(maisTarde.getMinutes())}`;
   }
 }
 
+/* Aplica valores na visualização */
 function aplicarValores() {
   const nome = inputNome.value.trim() || 'NOME COMPLETO DO(A) PACIENTE';
   const cpf = inputCpf.value.trim() || '000.000.000-00';
@@ -337,10 +327,10 @@ function aplicarValores() {
   exCid.textContent = cid;
   exCidDesc.textContent = cidDesc;
   sigName.textContent = profissional;
-  const dateObj = new Date(`${dataVal}T00:00:00`);
-  footerDate.textContent = formatDateLong(dateObj);
+  footerDate.textContent = formatDateLong(new Date(`${dataVal}T00:00:00`));
 }
 
+/* Gera ID único */
 function gerarIdUnico() {
   const now = new Date();
   const datePart = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}`;
@@ -349,6 +339,24 @@ function gerarIdUnico() {
   return `UBS-${datePart}${timePart}-${rndPart}`;
 }
 
+/* Coleta dados no formato do Apps Script */
+function coletarDadosParaRegistro(id) {
+  const hoje = new Date();
+  return {
+    ID: id,
+    Nome: inputNome.value.trim(),
+    CPF: inputCpf.value.trim(),
+    DataAtendimento: inputData.value,
+    HorarioAtendimento: `${inputHoraInicio.value} - ${inputHoraFim.value}`,
+    TipoAtendimento: inputProc.value,
+    Justificativa: inputProc.selectedOptions[0].dataset.desc || '',
+    Profissional: inputProf.value.trim(),
+    DataEmissao: hoje.toLocaleDateString('pt-BR'),
+    HoraEmissao: hoje.toLocaleTimeString('pt-BR')
+  };
+}
+
+/* Envia para planilha */
 async function enviarParaPlanilha(dataObj) {
   try {
     await fetch(SCRIPT_URL, {
@@ -359,36 +367,28 @@ async function enviarParaPlanilha(dataObj) {
     });
     return { ok: true };
   } catch (error) {
-    console.error('Falha ao enviar dados:', error);
-    return { ok: false, error: error };
+    console.error('Erro ao enviar dados:', error);
+    return { ok: false, error };
   }
 }
 
-function coletarDadosParaRegistro(id) {
-  return {
-      ID: uniqueID,
-      Nome: document.getElementById('nome').textContent.trim(),
-      CPF: document.getElementById('cpf').value,
-    
-  };
-}
-
-async function registrarDeclaracao(forcarNovoRegistro = false) {
+/* Registra a declaração */
+async function registrarDeclaracao(forcarNovo = false) {
   if (estaRegistrando) return null;
-  if (ultimoIdRegistrado && !forcarNovoRegistro) return ultimoIdRegistrado;
+  if (ultimoIdRegistrado && !forcarNovo) return ultimoIdRegistrado;
 
   estaRegistrando = true;
   const id = gerarIdUnico();
   const payload = coletarDadosParaRegistro(id);
-  
+
   try {
     const res = await enviarParaPlanilha(payload);
     ultimoIdRegistrado = id;
     authValueEl.textContent = id;
     if (res.ok) {
-      showMessage(`Declaração registrada com sucesso (ID: ${id})`);
+      showMessage(`Declaração registrada (ID: ${id})`);
     } else {
-      showMessage(`Registro falhou. Salvo com ID local: ${id}`, false);
+      showMessage(`Falha ao registrar (ID local: ${id})`, false);
     }
     return id;
   } finally {
@@ -398,25 +398,22 @@ async function registrarDeclaracao(forcarNovoRegistro = false) {
 
 function validarCampos() {
   if (!inputNome.value.trim()) {
-    showMessage('Preencha o nome do paciente.', false);
-    return false;
+    showMessage('Preencha o nome do paciente.', false); return false;
   }
   if (!inputCpf.value.trim()) {
-    showMessage('Preencha o CPF.', false);
-    return false;
+    showMessage('Preencha o CPF.', false); return false;
   }
   return true;
 }
 
 async function acaoRegistrarEImprimir() {
   if (!validarCampos()) return;
-  
   regPrintBtn.disabled = true;
   regPrintBtn.textContent = 'Registrando...';
-  
+
   aplicarValores();
   await registrarDeclaracao(true);
-  
+
   setTimeout(() => {
     window.print();
     regPrintBtn.disabled = false;
@@ -427,7 +424,7 @@ async function acaoRegistrarEImprimir() {
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('apply').addEventListener('click', aplicarValores);
   regPrintBtn.addEventListener('click', acaoRegistrarEImprimir);
-  
+
   window.addEventListener('beforeprint', () => {
     aplicarValores();
     registrarDeclaracao(false);
@@ -437,5 +434,6 @@ document.addEventListener('DOMContentLoaded', () => {
   aplicarValores();
 });
 </script>
+
 </body>
 </html>
