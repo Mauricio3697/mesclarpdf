@@ -263,11 +263,29 @@ const PROFISSIONAIS = [
 ];
 
 const PROCEDIMENTOS = [
+    // --- CONSULTAS ---
     { texto: "Consulta geral", valor: "Consulta médica geral", cid: "Z00.0", desc: "Exame clínico de rotina / avaliação médica" },
+    { texto: "Retorno de consulta", valor: "Retorno de consulta médica", cid: "Z09.8", desc: "Exame de seguimento de rotina" },
+    { texto: "Consulta odontológica", valor: "Consulta odontológica", cid: "Z01.2", desc: "Exame dentário de rotina" },
     { texto: "Consulta psicológica", valor: "Consulta psicológica", cid: "Z71.9", desc: "Aconselhamento não especificado" },
-    { texto: "Troca de receita", valor: "Comparecimento para troca de receita", cid: "Z76.0", desc: "Emissão de prescrição de repetição" },
-    { texto: "Exame de sangue", valor: "Exame laboratorial de sangue", cid: "Z01.0", desc: "Exame laboratorial de rotina ('Check up')" },
-    { texto: "Vacinação", valor: "Vacinação", cid: "Z23", desc: "Vacinação profilática" }
+    { texto: "Consulta de pré-natal", valor: "Consulta de acompanhamento pré-natal", cid: "Z34", desc: "Supervisão de gravidez normal" },
+
+    // --- PROCEDIMENTOS ---
+    { texto: "Curativo", valor: "Realização de curativo", cid: "Z48.0", desc: "Atenção e cuidados com curativos" },
+    { texto: "Administração de medicação", valor: "Administração de medicação", cid: "Z51.8", desc: "Cuidado médico especificado (ex: injetáveis)" },
+    { texto: "Nebulização / Inalação", valor: "Sessão de nebulização/inalação", cid: "Z51.8", desc: "Cuidados médicos (terapia respiratória)" },
+    { texto: "Retirada de pontos", valor: "Retirada de pontos (sutura)", cid: "Z48.0", desc: "Atenção a curativos e suturas" },
+    { texto: "Vacinação", valor: "Vacinação", cid: "Z23.8", desc: "Vacinação profilática" },
+    
+    // --- EXAMES E AFERIÇÕES ---
+    { texto: "Aferição de pressão arterial", valor: "Aferição de pressão arterial", cid: "Z13.6", desc: "Rastreamento de doenças cardiovasculares" },
+    { texto: "Exame preventivo (Papanicolau)", valor: "Exame preventivo ginecológico", cid: "Z01.4", desc: "Exame ginecológico de rotina" },
+    { texto: "Exame de sangue", valor: "Coleta para exame laboratorial", cid: "Z01.7", desc: "Exames laboratoriais" },
+
+    // --- ADMINISTRATIVO E OUTROS ---
+    { texto: "Acompanhante", valor: "Acompanhamento de paciente", cid: "Z76.3", desc: "Pessoa sadia acompanhando pessoa doente" },
+    { texto: "Troca de receita", valor: "Renovação de prescrição médica", cid: "Z76.0", desc: "Emissão de prescrição de repetição" },
+    { texto: "Retirada de exames", valor: "Retirada de resultados de exames", cid: "Z76.8", desc: "Contato com o serviço para fins administrativos" }
 ];
 
 const FRASES_DE_ELOGIO = [
@@ -510,3 +528,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </body>
 </html>
+
