@@ -4,10 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Declaração de Comparecimento — Formal</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0f4a7a">
+  
   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
   <style>
     :root{
       --blue:#0f4a7a;
+      --green:#25D366;
+      --red:#d9534f;
+      --grey: #6c757d;
       --muted:#666;
       --paper:#fff;
       --page-width:21cm;
@@ -44,127 +53,88 @@
     .cid .desc{font-weight:600}
     .cid small{display:block;color:var(--muted);font-weight:400;margin-top:6px}
     .watermark {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%,-50%);
-      width: 60%;
-      max-width: 680px;
-      opacity: 0.0;
-      pointer-events: none;
-      z-index: 0;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 60%; max-width: 680px; opacity: 0.0; pointer-events: none; z-index: 0;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
     }
     .watermark-text {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 42mm;
-      font-size: 13px;
-      color: rgba(0,0,0,0.24);
-      font-weight: 700;
-      text-align: center;
-      z-index: 0;
-      pointer-events: none;
-      white-space: pre-line;
+      position: absolute; left: 50%; transform: translateX(-50%); bottom: 42mm;
+      font-size: 13px; color: rgba(0,0,0,0.24); font-weight: 700;
+      text-align: center; z-index: 0; pointer-events: none; white-space: pre-line;
     }
     .signature-area{
-      position:absolute;
-      left:50%;
-      top:56%;
-      transform:translate(-50%,-50%);
-      text-align:center;
-      width:52%;
-      max-width:460px;
-      z-index:2;
+      position:absolute; left:50%; top:56%; transform:translate(-50%,-50%);
+      text-align:center; width:52%; max-width:460px; z-index:2;
     }
     .signature-line{height:92px;border-bottom:1px solid #000;margin-bottom:8px}
     .signature-name{font-weight:900;font-size:16px;position:relative;z-index:3}
     .signature-role{font-size:13px;color:var(--muted);position:relative;z-index:3}
     .stamp {
-      position: absolute;
-      top: -34px;
-      left: 50%;
-      transform: translateX(-50%) rotate(-8deg);
-      width: 160px;
-      opacity: 0.88;
-      mix-blend-mode: multiply;
-      pointer-events: none;
-      z-index:2;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
+      position: absolute; top: -34px; left: 50%; transform: translateX(-50%) rotate(-8deg);
+      width: 160px; opacity: 0.88; mix-blend-mode: multiply; pointer-events: none; z-index:2;
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
     }
     .footer{position:absolute;left:22mm;bottom:18mm;font-size:14px;color:var(--muted);width:calc(var(--page-width) - 44mm);box-sizing:border-box;text-align:left;border-top:1px solid #eee;padding-top:6px}
     .auth-inline{float:right;font-weight:700;color:#333}
     .controls{display:flex;flex-direction:column;gap:12px;padding:16px;background:#fff;border-radius:6px;box-shadow:0 2px 6px rgba(0,0,0,0.06);max-width:21cm;margin:8px auto}
     .controls h3 { margin: 0 0 8px 0; font-size: 16px; color: var(--blue); border-bottom: 2px solid #eee; padding-bottom: 6px; }
     .controls label{font-size:13px;color:var(--muted);display:block;margin-bottom:6px}
-    .controls input,.controls select{padding:8px;border:1px solid #ddd;border-radius:4px;font-size:15px; width: 100%; box-sizing: border-box;}
+    .controls input,.controls select,.controls a.btn{padding:8px;border:1px solid #ddd;border-radius:4px;font-size:15px; width: 100%; box-sizing: border-box; text-decoration: none;}
     .controls .row{display:flex;gap:12px; align-items: flex-end;}
     .controls .row > *{flex:1}
     .controls .full-width { flex-basis: 100%; }
     .muted-note{font-size:13px;color:var(--muted)}
-    .btn{padding:10px 14px;border-radius:6px;border:0;color:#fff;font-weight:700;cursor:pointer; width: 100%;}
-    .btn-print{background:#2f9f4a}
-
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:6px;border:0;color:#fff;font-weight:700;cursor:pointer; width: 100%;}
+    .btn-print{background:var(--red)}
+    .btn-whatsapp{background:var(--green)}
+    .btn-secondary{background:var(--grey)}
     .formal-border {
-        position: absolute;
-        top: 10mm; left: 10mm; right: 10mm; bottom: 10mm;
-        border: 2px solid var(--blue);
-        pointer-events: none;
-        box-sizing: border-box;
-        z-index: 0;
+      position: absolute; top: 10mm; left: 10mm; right: 10mm; bottom: 10mm;
+      border: 2px solid var(--blue); pointer-events: none; box-sizing: border-box; z-index: 0;
     }
-    
-    /* --- NOVOS ESTILOS: MENSAGEM COM DIGITAÇÃO NO PAINEL --- */
-    .feedback-container {
-        min-height: 40px; /* Previne que o layout salte */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+    .feedback-container { min-height: 40px; display: flex; align-items: center; justify-content: center; }
     .feedback-container p {
-        display: inline-block;
-        margin: 0;
-        padding: 8px 12px;
-        border-radius: 6px;
-        font-weight: 700;
-        overflow: hidden;
-        border-right: .15em solid; /* Cursor */
-        white-space: nowrap;
-        vertical-align: middle;
-        max-width: 100%;
+      display: inline-block; margin: 0; padding: 8px 12px; border-radius: 6px; font-weight: 700;
+      overflow: hidden; border-right: .15em solid; white-space: nowrap; vertical-align: middle; max-width: 100%;
     }
-    .feedback-container p.success {
-        background: #d4edda;
-        color: #155724;
-        border-color: #155724; /* Cor do cursor */
-    }
-    .feedback-container p.error {
-        background: #f8d7da;
-        color: #721c24;
-        border-color: #721c24; /* Cor do cursor */
-    }
+    .feedback-container p.success { background: #d4edda; color: #155724; border-color: #155724; }
+    .feedback-container p.error { background: #f8d7da; color: #721c24; border-color: #721c24; }
+    .feedback-container p.info { background: #d1ecf1; color: #0c5460; border-color: #0c5460; }
     @keyframes typing { from { width: 0 } to { width: 100% } }
     @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: inherit; } }
-
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.6); display: none; align-items: center;
+      justify-content: center; z-index: 1000; backdrop-filter: blur(5px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: #fff; padding: 24px 32px; border-radius: 8px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3); text-align: center;
+      max-width: 400px; width: 90%;
+    }
+    .modal-content h2 { margin: 0 0 20px; color: var(--blue); font-weight: 700; }
+    .modal-content label { text-align: left; }
+    .modal-content .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .professional-list { display: flex; flex-direction: column; gap: 12px; }
+    .professional-btn {
+      padding: 12px; border: 1px solid #ddd; border-radius: 6px; background: #f9f9f9;
+      cursor: pointer; font-size: 16px; font-weight: 600;
+      transition: background-color 0.2s, color 0.2s, transform 0.2s; width: 100%;
+    }
+    .professional-btn:hover { background-color: var(--blue); color: #fff; transform: translateY(-2px); }
 
     @media print{
       body{background:transparent}
-      .sheet{
-        box-shadow:none; margin:0; padding:18mm; border-radius:0; border: none; zoom: 95%;
-      }
-      .formal-border {
-        top: 0mm; left: 0mm; right: 0mm; bottom: 0mm; border: 2mm solid var(--blue); position: fixed;
-      }
+      .sheet{ box-shadow:none; margin:0; padding:18mm; border-radius:0; border: none; zoom: 95%; }
+      .formal-border { top: 0mm; left: 0mm; right: 0mm; bottom: 0mm; border: 2mm solid var(--blue); position: fixed; }
       .controls {display:none}
       @page{size:A4;margin:0mm;}
-      .watermark { opacity: 0.10 !important; width: 66% !important; filter: grayscale(100%) contrast(110%) !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .watermark { opacity: 0.10 !important; width: 66% !important; filter: grayscale(100%) contrast(110%) !important; }
       .watermark-text { color: rgba(0,0,0,0.34) !important; font-size: 12px !important; }
-      .stamp { mix-blend-mode: normal !important; filter: grayscale(100%) contrast(130%) brightness(95%) !important; opacity: 0.98 !important; width: 34% !important; left: 50%; transform: translateX(-50%) rotate(-8deg); z-index:2; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      .stamp { mix-blend-mode: normal !important; filter: grayscale(100%) contrast(130%) brightness(95%) !important; opacity: 0.98 !important; width: 34% !important; left: 50%; transform: translateX(-50%) rotate(-8deg); z-index:2; }
       .signature-name, .signature-role { z-index:3 !important; position:relative !important; }
-      img { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      img, .stamp, .watermark { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
     }
   </style>
 </head>
@@ -209,25 +179,25 @@
     <div class="row">
       <div>
         <label for="input-nome">Nome Completo</label>
-        <input type="text" id="input-nome" value="Paciente Silva" />
+        <input type="text" id="input-nome" placeholder="Nome do Paciente" />
       </div>
       <div>
         <label for="input-cpf">CPF</label>
-        <input type="text" id="input-cpf" value="123.456.789-00" maxlength="14" />
+        <input type="text" id="input-cpf" placeholder="000.000.000-00" maxlength="14" />
       </div>
     </div>
 
     <h3>Detalhes do Atendimento</h3>
     <div class="row">
       <div class="full-width">
-          <label for="input-procedimento">Procedimento / Motivo</label>
-          <select id="input-procedimento"></select>
+        <label for="input-procedimento">Procedimento / Motivo</label>
+        <select id="input-procedimento"></select>
       </div>
     </div>
-     <div class="row">
+    <div class="row">
         <div class="full-width">
-            <label for="input-profissional">Profissional Responsável</label>
-            <select id="input-profissional"></select>
+          <label for="input-profissional">Profissional Responsável (pode ser alterado aqui)</label>
+          <select id="input-profissional"></select>
         </div>
     </div>
     <div class="row">
@@ -245,183 +215,213 @@
       </div>
     </div>
 
-    <h3>Finalização</h3>
+    <h3>Finalização e Modelos</h3>
     <div id="feedback-container" class="feedback-container"></div>
     <div class="row">
-        <button id="regprint" class="btn btn-print">Registrar e Imprimir</button>
+        <button id="send-whatsapp" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> Enviar via WhatsApp</button>
+        <button id="regprint" class="btn btn-print"><i class="fas fa-print"></i> Registrar e Imprimir</button>
+    </div>
+    <div class="row" style="margin-top: 10px;">
+        <button id="download-blank-btn" class="btn btn-secondary"><i class="fas fa-download"></i> Baixar Modelo Recepção</button>
+        <a href="portador do.PDF" id="download-oficial-pdf" class="btn btn-secondary" target="_blank" download><i class="fas fa-file-pdf"></i> Baixar PDF Oficial</a>
     </div>
     <div class="muted-note" style="text-align: center;">A atualização do documento é feita em tempo real.</div>
+  </div>
+
+  <div id="professional-modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Selecione o Profissional</h2>
+      <div id="professional-list" class="professional-list"></div>
+    </div>
+  </div>
+
+  <div id="whatsapp-modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+      <h2>Enviar via WhatsApp</h2>
+      <div>
+          <label for="modal-input-whatsapp">Número do Paciente (com DDD)</label>
+          <input type="tel" id="modal-input-whatsapp" placeholder="11912345678" />
+      </div>
+      <div class="modal-actions">
+          <button id="modal-btn-cancel" class="btn btn-print" style="background-color: #6c757d;">Cancelar</button>
+          <button id="modal-btn-send" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> Confirmar e Enviar</button>
+      </div>
+    </div>
   </div>
 
 <script>
 /* ============================ CONFIGURAÇÃO ================================ */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyAyqmZlfLVRR8dgjqHTWl_jGYfAID3F_cTqrDsbLkkXDJusdPz9mdXswyzQZP1ejH/exec';
+const OFFLINE_STORAGE_KEY = 'offlineDeclarations';
+
+// COLE AQUI O LINK PÚBLICO DO SEU PDF DO GOOGLE DRIVE
+const URL_PDF_OFICIAL = 'portador do.PDF';
 
 const PROFISSIONAIS = [
     { nome: "Adriana Maria", carimboUrl: "https://i.imgur.com/HrmcNkI.png" },
-    { nome: "Mauricio Matheus Dias Oliveira", carimboUrl: "https://i.imgur.com/lLAQqeK.png", selecionado: true }
+    { nome: "Mauricio Matheus Dias Oliveira", carimboUrl: "https://i.imgur.com/lLAQqeK.png", selecionado: true },
+    { nome: "Joyce Cristina De Queiroz Trevizam", carimboUrl: "" },
+    { nome: "Recepção", carimboUrl: "" }
 ];
 
 const PROCEDIMENTOS = [
-    // --- CONSULTAS ---
     { texto: "Consulta geral", valor: "Consulta médica geral", cid: "Z00.0", desc: "Exame clínico de rotina / avaliação médica" },
     { texto: "Retorno de consulta", valor: "Retorno de consulta médica", cid: "Z09.8", desc: "Exame de seguimento de rotina" },
     { texto: "Consulta odontológica", valor: "Consulta odontológica", cid: "Z01.2", desc: "Exame dentário de rotina" },
     { texto: "Consulta psicológica", valor: "Consulta psicológica", cid: "Z71.9", desc: "Aconselhamento não especificado" },
     { texto: "Consulta de pré-natal", valor: "Consulta de acompanhamento pré-natal", cid: "Z34", desc: "Supervisão de gravidez normal" },
-
-    // --- PROCEDIMENTOS ---
     { texto: "Curativo", valor: "Realização de curativo", cid: "Z48.0", desc: "Atenção e cuidados com curativos" },
     { texto: "Administração de medicação", valor: "Administração de medicação", cid: "Z51.8", desc: "Cuidado médico especificado (ex: injetáveis)" },
     { texto: "Nebulização / Inalação", valor: "Sessão de nebulização/inalação", cid: "Z51.8", desc: "Cuidados médicos (terapia respiratória)" },
     { texto: "Retirada de pontos", valor: "Retirada de pontos (sutura)", cid: "Z48.0", desc: "Atenção a curativos e suturas" },
     { texto: "Vacinação", valor: "Vacinação", cid: "Z23.8", desc: "Vacinação profilática" },
-    
-    // --- EXAMES E AFERIÇÕES ---
     { texto: "Aferição de pressão arterial", valor: "Aferição de pressão arterial", cid: "Z13.6", desc: "Rastreamento de doenças cardiovasculares" },
-    { texto: "Exame preventivo (Papanicolau)", valor: "Exame preventivo ginecológico", cid: "Z01.4", desc: "Exame ginecológico de rotina" },
+    { texto: "Exame preventivo (Papanicolau)", valor: "Exame preventivo ginecológico (Papanicolau)", cid: "Z01.4", desc: "Exame ginecológico de rotina" },
     { texto: "Exame de sangue", valor: "Coleta para exame laboratorial", cid: "Z01.7", desc: "Exames laboratoriais" },
-
-    // --- ADMINISTRATIVO E OUTROS ---
     { texto: "Acompanhante", valor: "Acompanhamento de paciente", cid: "Z76.3", desc: "Pessoa sadia acompanhando pessoa doente" },
     { texto: "Troca de receita", valor: "Renovação de prescrição médica", cid: "Z76.0", desc: "Emissão de prescrição de repetição" },
-    { texto: "Retirada de exames", valor: "Retirada de resultados de exames", cid: "Z76.8", desc: "Contato com o serviço para fins administrativos" }
+    { texto: "Retirada de exames / Insumos", valor: "Retirada de exames / Insumos", cid: "Z76.8", desc: "Contato com o serviço para fins administrativos" }
 ];
 
-const FRASES_DE_ELOGIO = [
-    "Excelente trabalho, {nome}!",
-    "Serviço impecável, {nome}!",
-    "Mais um ótimo atendimento, {nome}!",
-    "Parabéns pelo profissionalismo, {nome}!",
-    "Eficiência e qualidade, parabéns {nome}!"
-];
+const FRASES_DE_ELOGIO = ["Excelente trabalho, {nome}!", "Serviço impecável, {nome}!", "Mais um ótimo atendimento, {nome}!", "Parabéns pelo profissionalismo, {nome}!"];
 /* ========================================================================= */
 
-/* Seleção de Elementos do DOM */
-const inputNome = document.getElementById('input-nome');
-const inputCpf = document.getElementById('input-cpf');
-const inputProc = document.getElementById('input-procedimento');
-const inputProf = document.getElementById('input-profissional');
-const inputData = document.getElementById('input-data');
-const inputHoraInicio = document.getElementById('input-hora-inicio');
-const inputHoraFim = document.getElementById('input-hora-fim');
-const exPaciente = document.getElementById('ex-paciente');
-const exCpf = document.getElementById('ex-cpf');
-const exData = document.getElementById('ex-data');
-const exHoraInicio = document.getElementById('ex-hora-inicio');
-const exHoraFim = document.getElementById('ex-hora-fim');
-const exProc = document.getElementById('ex-procedimento');
-const exCid = document.getElementById('ex-cid');
-const exCidDesc = document.getElementById('ex-cid-desc');
-const sigName = document.getElementById('sig-name');
-const stampImg = document.getElementById('stamp-img');
-const footerDate = document.getElementById('footer-date');
-const authValueEl = document.getElementById('auth-id-value');
-const regPrintBtn = document.getElementById('regprint');
-const feedbackContainer = document.getElementById('feedback-container');
+const elements = {
+    inputNome: document.getElementById('input-nome'),
+    inputCpf: document.getElementById('input-cpf'),
+    inputProc: document.getElementById('input-procedimento'),
+    inputProf: document.getElementById('input-profissional'),
+    inputData: document.getElementById('input-data'),
+    inputHoraInicio: document.getElementById('input-hora-inicio'),
+    inputHoraFim: document.getElementById('input-hora-fim'),
+    exPaciente: document.getElementById('ex-paciente'),
+    exCpf: document.getElementById('ex-cpf'),
+    exData: document.getElementById('ex-data'),
+    exHoraInicio: document.getElementById('ex-hora-inicio'),
+    exHoraFim: document.getElementById('ex-hora-fim'),
+    exProc: document.getElementById('ex-procedimento'),
+    sigName: document.getElementById('sig-name'),
+    stampImg: document.getElementById('stamp-img'),
+    footerDate: document.getElementById('footer-date'),
+    authValueEl: document.getElementById('auth-id-value'),
+    regPrintBtn: document.getElementById('regprint'),
+    sendWhatsappBtn: document.getElementById('send-whatsapp'),
+    downloadBlankBtn: document.getElementById('download-blank-btn'),
+    downloadOficialPdf: document.getElementById('download-oficial-pdf'),
+    feedbackContainer: document.getElementById('feedback-container'),
+    professionalModalOverlay: document.getElementById('professional-modal-overlay'),
+    professionalList: document.getElementById('professional-list'),
+    whatsappModalOverlay: document.getElementById('whatsapp-modal-overlay'),
+    modalInputWhatsapp: document.getElementById('modal-input-whatsapp'),
+    modalBtnSend: document.getElementById('modal-btn-send'),
+    modalBtnCancel: document.getElementById('modal-btn-cancel')
+};
 
-let ultimoIdRegistrado = null;
 let estaRegistrando = false;
 
-/* --- FUNÇÕES DE FORMATAÇÃO E UTILIDADES --- */
-function formatarNome(nome) { return nome.toLowerCase().replace(/(?:^|\s)\S/g, char => char.toUpperCase()); }
-function formatarCPF(cpf) {
+const formatarNome = (nome) => nome.toLowerCase().replace(/(?:^|\s)\S/g, char => char.toUpperCase());
+const formatarCPF = (cpf) => {
     let valor = cpf.replace(/\D/g, '');
-    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
-    valor = valor.replace(/(\d{3})(\d)/, '$1.$2');
-    valor = valor.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    valor = valor.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     return valor;
-}
-
-// --- NOVA FUNÇÃO showMessage COM DIGITAÇÃO NO PAINEL ---
-function showMessage(text, isSuccess = true) {
-    feedbackContainer.innerHTML = ''; // Limpa mensagem anterior
-
-    const p = document.createElement('p');
-    p.textContent = text;
-    p.className = isSuccess ? 'success' : 'error';
-    
-    const duracaoAnimacao = Math.max(1.5, text.length * 0.05);
-    p.style.animation = `typing ${duracaoAnimacao}s steps(${text.length * 2}, end), blink-caret .75s step-end infinite`;
-    
-    feedbackContainer.appendChild(p);
-
-    setTimeout(() => {
-        feedbackContainer.innerHTML = '';
-    }, (duracaoAnimacao * 1000) + 4000); // Duração da animação + 4s de leitura
-}
-
+};
 const pad = (n) => String(n).padStart(2, '0');
 const formatDateLong = (d) => {
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
   return `${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
 };
 
+function showMessage(text, type = 'success') {
+    elements.feedbackContainer.innerHTML = '';
+    const p = document.createElement('p');
+    p.textContent = text;
+    p.className = type;
+    const duracaoAnimacao = Math.max(1.5, text.length * 0.05);
+    p.style.animation = `typing ${duracaoAnimacao}s steps(${text.length * 2}, end), blink-caret .75s step-end infinite`;
+    elements.feedbackContainer.appendChild(p);
+    setTimeout(() => { elements.feedbackContainer.innerHTML = ''; }, (duracaoAnimacao * 1000) + 4000);
+}
+
 function preencherCamposComDataAtual() {
   const agora = new Date();
-  if (!inputData.value) inputData.valueAsDate = agora;
-  if (!inputHoraInicio.value) inputHoraInicio.value = `${pad(agora.getHours())}:${pad(agora.getMinutes())}`;
-  if (!inputHoraFim.value) {
-    const maisTarde = new Date(agora.getTime() + 30 * 60000);
-    inputHoraFim.value = `${pad(maisTarde.getHours())}:${pad(maisTarde.getMinutes())}`;
+  if (!elements.inputData.value) elements.inputData.valueAsDate = agora;
+  if (!elements.inputHoraInicio.value) {
+    const inicio = new Date(agora.getTime() - 30 * 60000);
+    elements.inputHoraInicio.value = `${pad(inicio.getHours())}:${pad(inicio.getMinutes())}`;
+  }
+  if (!elements.inputHoraFim.value) {
+    const termino = new Date(agora.getTime() + 10 * 60000);
+    elements.inputHoraFim.value = `${pad(termino.getHours())}:${pad(termino.getMinutes())}`;
   }
 }
 
 function popularSeletores() {
-    inputProf.innerHTML = '';
-    inputProc.innerHTML = '';
     PROFISSIONAIS.forEach(prof => {
-        const option = document.createElement('option');
-        option.value = prof.nome;
-        option.textContent = prof.nome;
-        option.dataset.stampUrl = prof.carimboUrl;
+        const option = new Option(prof.nome, prof.nome);
+        option.dataset.stampUrl = prof.carimboUrl || '';
         if (prof.selecionado) option.selected = true;
-        inputProf.appendChild(option);
+        elements.inputProf.add(option);
     });
     PROCEDIMENTOS.forEach(proc => {
-        const option = document.createElement('option');
-        option.value = proc.valor;
-        option.textContent = proc.texto;
+        const option = new Option(proc.texto, proc.valor);
         option.dataset.cid = proc.cid;
         option.dataset.desc = proc.desc;
-        inputProc.appendChild(option);
+        elements.inputProc.add(option);
     });
 }
 
 function aplicarValores() {
-  const nome = inputNome.value.trim() || 'NOME COMPLETO DO(A) PACIENTE';
-  const cpf = inputCpf.value.trim() || '000.000.000-00';
-  const selectedProcOption = inputProc.selectedOptions[0];
-  const procedimento = selectedProcOption ? selectedProcOption.value : 'Procedimento';
-  const cid = selectedProcOption ? selectedProcOption.dataset.cid : '---';
-  const cidDesc = selectedProcOption ? selectedProcOption.dataset.desc : '';
-  const selectedProfOption = inputProf.selectedOptions[0];
-  const profissional = selectedProfOption ? selectedProfOption.value : 'NOME DO PROFISSIONAL';
-  const carimboUrl = selectedProfOption ? selectedProfOption.dataset.stampUrl : '';
-  let dataVal = inputData.value;
-  let horaInicioVal = inputHoraInicio.value;
-  let horaFimVal = inputHoraFim.value;
+  const nome = elements.inputNome.value.trim() || 'NOME COMPLETO DO(A) PACIENTE';
+  const cpf = elements.inputCpf.value.trim() || '000.000.000-00';
+  const selectedProcOption = elements.inputProc.selectedOptions[0];
+  const procedimento = selectedProcOption?.value || 'Procedimento';
+  const cid = selectedProcOption?.dataset.cid || '---';
+  const cidDesc = selectedProcOption?.dataset.desc || '';
+  const selectedProfOption = elements.inputProf.selectedOptions[0];
+  const profissional = selectedProfOption?.value || 'NOME DO PROFISSIONAL';
+  const carimboUrl = selectedProfOption?.dataset.stampUrl || '';
+  let dataVal = elements.inputData.value, horaInicioVal = elements.inputHoraInicio.value, horaFimVal = elements.inputHoraFim.value;
 
   if (!dataVal || !horaInicioVal || !horaFimVal) {
     preencherCamposComDataAtual();
-    dataVal = inputData.value;
-    horaInicioVal = inputHoraInicio.value;
-    horaFimVal = inputHoraFim.value;
+    dataVal = elements.inputData.value; horaInicioVal = elements.inputHoraInicio.value; horaFimVal = elements.inputHoraFim.value;
   }
   
-  exPaciente.textContent = formatarNome(nome);
-  exCpf.textContent = cpf;
+  elements.exPaciente.textContent = formatarNome(nome);
+  elements.exCpf.textContent = cpf;
   const [yyyy, mm, dd] = dataVal.split('-');
-  exData.textContent = `${dd}/${mm}/${yyyy}`;
-  exHoraInicio.textContent = horaInicioVal;
-  exHoraFim.textContent = horaFimVal;
-  exProc.textContent = procedimento;
-  exCid.textContent = cid;
-  exCidDesc.textContent = cidDesc;
-  sigName.textContent = profissional;
-  stampImg.src = carimboUrl;
-  
-  footerDate.textContent = formatDateLong(new Date(`${dataVal}T00:00:00`));
+  elements.exData.textContent = `${dd}/${mm}/${yyyy}`;
+  elements.exHoraInicio.textContent = horaInicioVal;
+  elements.exHoraFim.textContent = horaFimVal;
+  elements.exProc.textContent = procedimento;
+  document.getElementById('ex-cid').textContent = cid;
+  document.getElementById('ex-cid-desc').textContent = cidDesc;
+  elements.sigName.textContent = profissional;
+  elements.stampImg.src = carimboUrl;
+  elements.stampImg.style.display = carimboUrl ? 'block' : 'none';
+  elements.footerDate.textContent = formatDateLong(new Date(`${dataVal}T00:00:00`));
+}
+
+function showProfessionalModal() {
+    elements.professionalList.innerHTML = '';
+    PROFISSIONAIS.forEach(prof => {
+        const btn = document.createElement('button');
+        btn.className = 'professional-btn';
+        btn.textContent = prof.nome;
+        btn.onclick = () => {
+            elements.inputProf.value = prof.nome;
+            elements.inputProf.dispatchEvent(new Event('change'));
+            elements.professionalModalOverlay.classList.remove('active');
+        };
+        elements.professionalList.appendChild(btn);
+    });
+    elements.professionalModalOverlay.classList.add('active');
+}
+
+function showWhatsappModal() {
+    if (!validarCampos(false)) return;
+    elements.whatsappModalOverlay.classList.add('active');
+    elements.modalInputWhatsapp.focus();
 }
 
 function gerarIdUnico() {
@@ -432,100 +432,179 @@ function gerarIdUnico() {
   return `UBS-${datePart}${timePart}-${rndPart}`;
 }
 
-function coletarDadosParaRegistro(id) {
-  const hoje = new Date();
-  const selectedProcOption = inputProc.selectedOptions[0];
-  return {
-    ID: id,
-    Nome: inputNome.value.trim(),
-    CPF: inputCpf.value.trim(),
-    DataAtendimento: inputData.value,
-    HorarioAtendimento: `${inputHoraInicio.value} - ${inputHoraFim.value}`,
-    TipoAtendimento: selectedProcOption ? selectedProcOption.value : '',
-    Justificativa: selectedProcOption ? selectedProcOption.dataset.desc : '',
-    Profissional: inputProf.value,
-    DataEmissao: hoje.toLocaleDateString('pt-BR'),
-    HoraEmissao: hoje.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-  };
-}
-
-async function enviarParaPlanilha(dataObj) {
-  try {
-    await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataObj) });
-    return { ok: true };
-  } catch (error) {
-    console.error('Erro ao enviar dados:', error);
-    return { ok: false, error };
-  }
-}
-
-async function registrarDeclaracao(forcarNovo = false) {
+async function registrarDeclaracao() {
   if (estaRegistrando) return null;
-  if (ultimoIdRegistrado && !forcarNovo) return ultimoIdRegistrado;
   estaRegistrando = true;
   const id = gerarIdUnico();
-  const payload = coletarDadosParaRegistro(id);
+
+  // Formata a data para o padrão brasileiro antes de enviar
+  const [yyyy, mm, dd] = elements.inputData.value.split('-');
+  const dataFormatada = `${dd}/${mm}/${yyyy}`;
+
+  const payload = {
+    ID: id, Nome: elements.inputNome.value.trim(), CPF: elements.inputCpf.value.trim(),
+    DataAtendimento: dataFormatada, // <-- MUDANÇA AQUI
+    HorarioAtendimento: `${elements.inputHoraInicio.value} - ${elements.inputHoraFim.value}`,
+    TipoAtendimento: elements.inputProc.value, Justificativa: elements.inputProc.selectedOptions[0]?.dataset.desc || '',
+    Profissional: elements.inputProf.value, DataEmissao: new Date().toLocaleDateString('pt-BR'),
+    HoraEmissao: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+  };
+  elements.authValueEl.textContent = id;
   try {
-    const res = await enviarParaPlanilha(payload);
-    ultimoIdRegistrado = id;
-    authValueEl.textContent = id;
-    if (res.ok) {
-        const nomeProfissional = inputProf.value.split(' ')[0];
+    if (navigator.onLine) {
+        await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        const nomeProfissional = payload.Profissional.split(' ')[0];
         const fraseAleatoria = FRASES_DE_ELOGIO[Math.floor(Math.random() * FRASES_DE_ELOGIO.length)];
-        const mensagemElogio = fraseAleatoria.replace('{nome}', nomeProfissional);
-        showMessage(mensagemElogio, true);
+        showMessage(fraseAleatoria.replace('{nome}', nomeProfissional), 'success');
     } else {
-        showMessage(`Falha ao registrar. Tente novamente.`, false);
+        const offlineData = JSON.parse(localStorage.getItem(OFFLINE_STORAGE_KEY) || '[]');
+        offlineData.push(payload);
+        localStorage.setItem(OFFLINE_STORAGE_KEY, JSON.stringify(offlineData));
+        showMessage('Salvo localmente! Será enviado quando houver conexão.', 'info');
     }
-    return res.ok;
+    return id;
+  } catch (error) {
+    console.error('Erro ao registrar:', error);
+    showMessage(`Falha ao registrar. Tente novamente.`, 'error');
+    return null;
   } finally {
     estaRegistrando = false;
   }
 }
 
-function validarCampos() {
-  if (!inputNome.value.trim()) {
-    showMessage('Preencha o nome do paciente.', false); return false;
-  }
-  if (inputCpf.value.trim().length < 14) {
-    showMessage('Preencha o CPF completo.', false); return false;
+async function syncOfflineData() {
+    const offlineData = JSON.parse(localStorage.getItem(OFFLINE_STORAGE_KEY) || '[]');
+    if (offlineData.length === 0) return;
+    showMessage(`Sincronizando ${offlineData.length} registros...`, 'info');
+    const failedToSend = [];
+    for (const payload of offlineData) {
+        try {
+            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
+        } catch (error) {
+            failedToSend.push(payload);
+        }
+    }
+    localStorage.setItem(OFFLINE_STORAGE_KEY, JSON.stringify(failedToSend));
+    if (failedToSend.length === 0) showMessage('Todos os registros foram sincronizados!', 'success');
+    else showMessage(`${failedToSend.length} registros não puderam ser enviados.`, 'error');
+}
+
+function validarCampos(isWhatsApp = false, whatsappNumber = '') {
+  if (!elements.inputNome.value.trim()) { showMessage('Preencha o nome do paciente.', 'error'); return false; }
+  if (elements.inputCpf.value.trim().length < 14) { showMessage('Preencha o CPF completo.', 'error'); return false; }
+  if (isWhatsApp) {
+    const phone = whatsappNumber.replace(/\D/g, '');
+    if (phone.length < 10) { showMessage('Preencha um WhatsApp válido com DDD.', 'error'); return false; }
   }
   return true;
 }
 
 async function acaoRegistrarEImprimir() {
   if (!validarCampos()) return;
-  regPrintBtn.disabled = true;
-  regPrintBtn.textContent = 'Registrando...';
+  elements.regPrintBtn.disabled = true;
+  elements.regPrintBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
   aplicarValores();
-  const sucesso = await registrarDeclaracao(true);
-  
-  if (sucesso) {
-      setTimeout(() => {
-        window.print();
-      }, 500);
+  if (await registrarDeclaracao()) {
+    setTimeout(() => window.print(), 500);
   }
-  
-  regPrintBtn.disabled = false;
-  regPrintBtn.textContent = 'Registrar e Imprimir';
+  elements.regPrintBtn.disabled = false;
+  elements.regPrintBtn.innerHTML = '<i class="fas fa-print"></i> Registrar e Imprimir';
+}
+
+async function acaoExecutarEnvioWhatsApp() {
+    const whatsappNumber = elements.modalInputWhatsapp.value;
+    if (!validarCampos(true, whatsappNumber)) return;
+    elements.modalBtnSend.disabled = true;
+    elements.modalBtnSend.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando...';
+    aplicarValores();
+    const newId = await registrarDeclaracao();
+    if (!newId) {
+        elements.modalBtnSend.disabled = false;
+        elements.modalBtnSend.innerHTML = '<i class="fab fa-whatsapp"></i> Confirmar e Enviar';
+        return;
+    }
+    const element = document.getElementById('doc');
+    const options = { margin: 0, filename: `Declaracao_${elements.inputNome.value.trim().replace(/ /g, '_')}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' } };
+    await html2pdf().from(element).set(options).save();
+    const phone = '55' + whatsappNumber.replace(/\D/g, '');
+    const message = `Olá. Somos da *UBS Laranjeiras*. Segue a sua declaração de comparecimento em PDF.\n\n*ID de Autenticação:* ${newId}`;
+    const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    showMessage('PDF baixado! Anexe-o na conversa do WhatsApp.', 'info');
+    elements.whatsappModalOverlay.classList.remove('active');
+    setTimeout(() => {
+        window.open(whatsappUrl, '_blank');
+        elements.modalBtnSend.disabled = false;
+        elements.modalBtnSend.innerHTML = '<i class="fab fa-whatsapp"></i> Confirmar e Enviar';
+        elements.modalInputWhatsapp.value = '';
+    }, 2000);
+}
+
+async function acaoBaixarEmBranco() {
+    const bodyTextP = document.getElementById('body-text').querySelector('p');
+    const cidBlock = document.querySelector('.cid');
+    const originalBodyHTML = bodyTextP.innerHTML;
+    const originalSigNameText = elements.sigName.textContent;
+    const originalStampDisplay = elements.stampImg.style.display;
+    bodyTextP.innerHTML = `Declaramos, para os devidos fins, que ______________________________________________________, portador(a) do CPF nº ________________________, esteve presente nesta unidade na data de _____/_____/_____, no período compreendido entre _____:_____ e _____:_____.`;
+    cidBlock.style.display = 'none';
+    elements.sigName.textContent = 'Recepção';
+    elements.stampImg.style.display = 'none';
+    const element = document.getElementById('doc');
+    const options = {
+        margin: 0,
+        filename: 'Declaracao_em_Branco_Recepcao.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+    };
+    await html2pdf().from(element).set(options).save();
+    showMessage('PDF em branco para Recepção baixado!', 'info');
+    bodyTextP.innerHTML = originalBodyHTML;
+    cidBlock.style.display = '';
+    elements.sigName.textContent = originalSigNameText;
+    elements.stampImg.style.display = originalStampDisplay;
+    aplicarValores();
 }
 
 // --- INICIALIZAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
   popularSeletores();
-  regPrintBtn.addEventListener('click', acaoRegistrarEImprimir);
-  const inputsParaMonitorar = [inputNome, inputCpf, inputProc, inputProf, inputData, inputHoraInicio, inputHoraFim];
-  inputsParaMonitorar.forEach(input => {
-      input.addEventListener('input', aplicarValores);
-      input.addEventListener('change', aplicarValores);
-});
-  inputCpf.addEventListener('input', (e) => { e.target.value = formatarCPF(e.target.value); });
+  elements.regPrintBtn.addEventListener('click', acaoRegistrarEImprimir);
+  elements.sendWhatsappBtn.addEventListener('click', showWhatsappModal);
+  elements.downloadBlankBtn.addEventListener('click', acaoBaixarEmBranco);
+  elements.modalBtnSend.addEventListener('click', acaoExecutarEnvioWhatsApp);
+  elements.modalBtnCancel.addEventListener('click', () => elements.whatsappModalOverlay.classList.remove('active'));
+  
+  if (URL_PDF_OFICIAL && URL_PDF_OFICIAL.startsWith('http')) {
+      elements.downloadOficialPdf.href = URL_PDF_OFICIAL;
+  } else {
+      elements.downloadOficialPdf.style.display = 'none';
+  }
+  
+  Object.values(elements).forEach(el => {
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
+          el.addEventListener('input', aplicarValores);
+          el.addEventListener('change', aplicarValores);
+      }
+  });
+
+  elements.inputCpf.addEventListener('input', (e) => { e.target.value = formatarCPF(e.target.value); });
   window.addEventListener('beforeprint', aplicarValores);
+  window.addEventListener('online', syncOfflineData);
+
   preencherCamposComDataAtual();
-  aplicarValores();
+  showProfessionalModal();
+  if(navigator.onLine) syncOfflineData();
 });
+
+// --- Service Worker Registration ---
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => console.log('Service Worker registrado:', reg.scope))
+      .catch(err => console.log('Falha ao registrar Service Worker:', err));
+  });
+}
 </script>
 
 </body>
 </html>
-
