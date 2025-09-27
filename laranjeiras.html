@@ -140,10 +140,10 @@
 </head>
 <body>
   
-  <div class="sheet" id="doc">
-    <div class="formal-border"></div>
-    <img class="watermark" src="https://i.imgur.com/fIO428k.png" alt="Marca d'água oficial" crossorigin="anonymous" />
-    <div class="watermark-text">
+  <div class="sheet" id="doc" role="document" aria-label="Declaração de Comparecimento">
+    <div class="formal-border" aria-hidden="true"></div>
+    <img class="watermark" src="https://i.imgur.com/fIO428k.png" alt="Marca d'água oficial" crossorigin="anonymous" aria-hidden="true" />
+    <div class="watermark-text" aria-hidden="true">
       CNES: 2085879 · AVENIDA PAULICÉIA 360 · (11) 4899-3367
       <br>PARA CONFIRMAR AUTENTICIDADE
     </div>
@@ -179,11 +179,11 @@
     <div class="row">
       <div>
         <label for="input-nome">Nome Completo</label>
-        <input type="text" id="input-nome" placeholder="Nome do Paciente" />
+        <input type="text" id="input-nome" placeholder="Nome do Paciente" aria-label="Nome do paciente" />
       </div>
       <div>
         <label for="input-cpf">CPF</label>
-        <input type="text" id="input-cpf" placeholder="000.000.000-00" maxlength="14" />
+        <input inputmode="numeric" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="CPF no formato 000.000.000-00" type="text" id="input-cpf" placeholder="000.000.000-00" maxlength="14" aria-label="CPF do paciente" />
       </div>
     </div>
 
@@ -191,60 +191,60 @@
     <div class="row">
       <div class="full-width">
         <label for="input-procedimento">Procedimento / Motivo</label>
-        <select id="input-procedimento"></select>
+        <select id="input-procedimento" aria-label="Procedimento"></select>
       </div>
     </div>
     <div class="row">
         <div class="full-width">
           <label for="input-profissional">Profissional Responsável (pode ser alterado aqui)</label>
-          <select id="input-profissional"></select>
+          <select id="input-profissional" aria-label="Profissional"></select>
         </div>
     </div>
     <div class="row">
       <div>
         <label for="input-data">Data</label>
-        <input type="date" id="input-data" />
+        <input type="date" id="input-data" aria-label="Data do atendimento" />
       </div>
       <div>
         <label for="input-hora-inicio">Início</label>
-        <input type="time" id="input-hora-inicio" />
+        <input type="time" id="input-hora-inicio" aria-label="Hora de início" />
       </div>
       <div>
         <label for="input-hora-fim">Término</label>
-        <input type="time" id="input-hora-fim" />
+        <input type="time" id="input-hora-fim" aria-label="Hora de término" />
       </div>
     </div>
 
     <h3>Finalização e Modelos</h3>
-    <div id="feedback-container" class="feedback-container"></div>
+    <div id="feedback-container" class="feedback-container" aria-live="polite"></div>
     <div class="row">
-        <button id="send-whatsapp" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> Enviar via WhatsApp</button>
-        <button id="regprint" class="btn btn-print"><i class="fas fa-print"></i> Registrar e Imprimir</button>
+        <button type="button" id="send-whatsapp" class="btn btn-whatsapp"><i class="fab fa-whatsapp" aria-hidden="true"></i> Enviar via WhatsApp</button>
+        <button type="button" id="regprint" class="btn btn-print"><i class="fas fa-print" aria-hidden="true"></i> Registrar e Imprimir</button>
     </div>
     <div class="row" style="margin-top: 10px;">
-        <button id="download-blank-btn" class="btn btn-secondary"><i class="fas fa-download"></i> Baixar Modelo Recepção</button>
-        <a href="portador do.PDF" id="download-oficial-pdf" class="btn btn-secondary" target="_blank" download><i class="fas fa-file-pdf"></i> Baixar PDF Oficial</a>
+        <button type="button" id="download-blank-btn" class="btn btn-secondary"><i class="fas fa-download" aria-hidden="true"></i> Baixar Modelo Recepção</button>
+        <a href="#" id="download-oficial-pdf" class="btn btn-secondary" target="_blank" download><i class="fas fa-file-pdf" aria-hidden="true"></i> Baixar PDF Oficial</a>
     </div>
     <div class="muted-note" style="text-align: center;">A atualização do documento é feita em tempo real.</div>
   </div>
 
-  <div id="professional-modal-overlay" class="modal-overlay">
+  <div id="professional-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-content">
       <h2>Selecione o Profissional</h2>
       <div id="professional-list" class="professional-list"></div>
     </div>
   </div>
 
-  <div id="whatsapp-modal-overlay" class="modal-overlay">
+  <div id="whatsapp-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-content">
       <h2>Enviar via WhatsApp</h2>
       <div>
           <label for="modal-input-whatsapp">Número do Paciente (com DDD)</label>
-          <input type="tel" id="modal-input-whatsapp" placeholder="11912345678" />
+          <input inputmode="tel" type="tel" id="modal-input-whatsapp" placeholder="11912345678" aria-label="Número para WhatsApp" />
       </div>
       <div class="modal-actions">
-          <button id="modal-btn-cancel" class="btn btn-print" style="background-color: #6c757d;">Cancelar</button>
-          <button id="modal-btn-send" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> Confirmar e Enviar</button>
+          <button type="button" id="modal-btn-cancel" class="btn btn-print" style="background-color: #6c757d;">Cancelar</button>
+          <button type="button" id="modal-btn-send" class="btn btn-whatsapp"><i class="fab fa-whatsapp" aria-hidden="true"></i> Confirmar e Enviar</button>
       </div>
     </div>
   </div>
@@ -254,7 +254,6 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyAyqmZlfLVRR8dgjqHTWl_jGYfAID3F_cTqrDsbLkkXDJusdPz9mdXswyzQZP1ejH/exec';
 const OFFLINE_STORAGE_KEY = 'offlineDeclarations';
 
-// COLE AQUI O LINK PÚBLICO DO SEU PDF DO GOOGLE DRIVE
 const URL_PDF_OFICIAL = 'portador do.PDF';
 
 const PROFISSIONAIS = [
@@ -318,6 +317,7 @@ const elements = {
 };
 
 let estaRegistrando = false;
+let messageTimeout;
 
 const formatarNome = (nome) => nome.toLowerCase().replace(/(?:^|\s)\S/g, char => char.toUpperCase());
 const formatarCPF = (cpf) => {
@@ -325,6 +325,21 @@ const formatarCPF = (cpf) => {
     valor = valor.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     return valor;
 };
+
+// Validador de CPF (algoritmo mod 11)
+function validarCPFCompleto(cpf) {
+    const nums = cpf.replace(/\D/g, '');
+    if (!nums || nums.length !== 11) return false;
+    if (/^(\d)\1+$/.test(nums)) return false; // todos iguais
+    const calc = (t) => {
+        let sum = 0;
+        for (let i = 0; i < t - 1; i++) sum += parseInt(nums.charAt(i)) * (t - i);
+        let r = (sum * 10) % 11;
+        return r === 10 ? 0 : r;
+    };
+    return calc(10) === parseInt(nums.charAt(9)) && calc(11) === parseInt(nums.charAt(10));
+}
+
 const pad = (n) => String(n).padStart(2, '0');
 const formatDateLong = (d) => {
   const meses = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
@@ -332,14 +347,18 @@ const formatDateLong = (d) => {
 };
 
 function showMessage(text, type = 'success') {
+    clearTimeout(messageTimeout);
     elements.feedbackContainer.innerHTML = '';
     const p = document.createElement('p');
     p.textContent = text;
     p.className = type;
-    const duracaoAnimacao = Math.max(1.5, text.length * 0.05);
-    p.style.animation = `typing ${duracaoAnimacao}s steps(${text.length * 2}, end), blink-caret .75s step-end infinite`;
+    const charCount = text.length;
+    const typingDuration = Math.max(1.5, charCount * 0.05);
+    const initialDelay = 0.12;
+    p.style.animation = `typing ${typingDuration}s steps(${charCount}, end) ${initialDelay}s forwards, blink-caret 0.75s step-end ${charCount + 2} ${initialDelay}s`;
     elements.feedbackContainer.appendChild(p);
-    setTimeout(() => { elements.feedbackContainer.innerHTML = ''; }, (duracaoAnimacao * 1000) + 4000);
+    const totalVisibleTime = (typingDuration + initialDelay) * 1000 + 3500;
+    messageTimeout = setTimeout(() => { elements.feedbackContainer.innerHTML = ''; }, totalVisibleTime);
 }
 
 function preencherCamposComDataAtual() {
@@ -389,8 +408,11 @@ function aplicarValores() {
   
   elements.exPaciente.textContent = formatarNome(nome);
   elements.exCpf.textContent = cpf;
-  const [yyyy, mm, dd] = dataVal.split('-');
-  elements.exData.textContent = `${dd}/${mm}/${yyyy}`;
+  if (dataVal) {
+    const [yyyy, mm, dd] = dataVal.split('-');
+    elements.exData.textContent = `${dd}/${mm}/${yyyy}`;
+    elements.footerDate.textContent = formatDateLong(new Date(`${dataVal}T00:00:00`));
+  }
   elements.exHoraInicio.textContent = horaInicioVal;
   elements.exHoraFim.textContent = horaFimVal;
   elements.exProc.textContent = procedimento;
@@ -399,28 +421,31 @@ function aplicarValores() {
   elements.sigName.textContent = profissional;
   elements.stampImg.src = carimboUrl;
   elements.stampImg.style.display = carimboUrl ? 'block' : 'none';
-  elements.footerDate.textContent = formatDateLong(new Date(`${dataVal}T00:00:00`));
 }
 
 function showProfessionalModal() {
     elements.professionalList.innerHTML = '';
     PROFISSIONAIS.forEach(prof => {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'professional-btn';
         btn.textContent = prof.nome;
         btn.onclick = () => {
             elements.inputProf.value = prof.nome;
             elements.inputProf.dispatchEvent(new Event('change'));
             elements.professionalModalOverlay.classList.remove('active');
+            elements.professionalModalOverlay.setAttribute('aria-hidden', 'true');
         };
         elements.professionalList.appendChild(btn);
     });
     elements.professionalModalOverlay.classList.add('active');
+    elements.professionalModalOverlay.setAttribute('aria-hidden', 'false');
 }
 
 function showWhatsappModal() {
     if (!validarCampos(false)) return;
     elements.whatsappModalOverlay.classList.add('active');
+    elements.whatsappModalOverlay.setAttribute('aria-hidden', 'false');
     elements.modalInputWhatsapp.focus();
 }
 
@@ -432,18 +457,39 @@ function gerarIdUnico() {
   return `UBS-${datePart}${timePart}-${rndPart}`;
 }
 
+// Envia o payload tentando fetch normal (com resposta) e faz fallback para sendBeacon/no-cors/localStorage
+async function enviarPayload(payload) {
+    // primeira tentativa: fetch normal (espera resposta)
+    try {
+        const res = await fetch(SCRIPT_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        if (res && (res.ok || res.type === 'opaque')) {
+            return true; // se ok ou resposta opaca (alguns servidores) considerar sucesso
+        }
+    } catch (err) {
+        // falhou — vamos tentar sendBeacon
+    }
+    // tentativa sendBeacon
+    try {
+        if (navigator.sendBeacon) {
+            const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+            const ok = navigator.sendBeacon(SCRIPT_URL, blob);
+            if (ok) return true;
+        }
+    } catch (err) {
+        // fallback
+    }
+    return false;
+}
+
 async function registrarDeclaracao() {
   if (estaRegistrando) return null;
   estaRegistrando = true;
   const id = gerarIdUnico();
-
-  // Formata a data para o padrão brasileiro antes de enviar
   const [yyyy, mm, dd] = elements.inputData.value.split('-');
   const dataFormatada = `${dd}/${mm}/${yyyy}`;
-
   const payload = {
     ID: id, Nome: elements.inputNome.value.trim(), CPF: elements.inputCpf.value.trim(),
-    DataAtendimento: dataFormatada, // <-- MUDANÇA AQUI
+    DataAtendimento: dataFormatada,
     HorarioAtendimento: `${elements.inputHoraInicio.value} - ${elements.inputHoraFim.value}`,
     TipoAtendimento: elements.inputProc.value, Justificativa: elements.inputProc.selectedOptions[0]?.dataset.desc || '',
     Profissional: elements.inputProf.value, DataEmissao: new Date().toLocaleDateString('pt-BR'),
@@ -452,15 +498,23 @@ async function registrarDeclaracao() {
   elements.authValueEl.textContent = id;
   try {
     if (navigator.onLine) {
-        await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-        const nomeProfissional = payload.Profissional.split(' ')[0];
-        const fraseAleatoria = FRASES_DE_ELOGIO[Math.floor(Math.random() * FRASES_DE_ELOGIO.length)];
-        showMessage(fraseAleatoria.replace('{nome}', nomeProfissional), 'success');
+        const sent = await enviarPayload(payload);
+        if (sent) {
+            const nomeProfissional = payload.Profissional.split(' ')[0];
+            const fraseAleatoria = FRASES_DE_ELOGIO[Math.floor(Math.random() * FRASES_DE_ELOGIO.length)];
+            showMessage(fraseAleatoria.replace('{nome}', nomeProfissional), 'success');
+        } else {
+            // não conseguiu enviar remotamente — salvar local
+            const offlineData = JSON.parse(localStorage.getItem(OFFLINE_STORAGE_KEY) || '[]');
+            offlineData.push(payload);
+            localStorage.setItem(OFFLINE_STORAGE_KEY, JSON.stringify(offlineData));
+            showMessage('Salvo localmente! Será enviado quando houver conexão.', 'info');
+        }
     } else {
         const offlineData = JSON.parse(localStorage.getItem(OFFLINE_STORAGE_KEY) || '[]');
         offlineData.push(payload);
         localStorage.setItem(OFFLINE_STORAGE_KEY, JSON.stringify(offlineData));
-        showMessage('Salvo localmente! Será enviado quando houver conexão.', 'info');
+        showMessage('Sem conexão. Registro salvo localmente.', 'info');
     }
     return id;
   } catch (error) {
@@ -478,11 +532,8 @@ async function syncOfflineData() {
     showMessage(`Sincronizando ${offlineData.length} registros...`, 'info');
     const failedToSend = [];
     for (const payload of offlineData) {
-        try {
-            await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) });
-        } catch (error) {
-            failedToSend.push(payload);
-        }
+        const sent = await enviarPayload(payload);
+        if (!sent) failedToSend.push(payload);
     }
     localStorage.setItem(OFFLINE_STORAGE_KEY, JSON.stringify(failedToSend));
     if (failedToSend.length === 0) showMessage('Todos os registros foram sincronizados!', 'success');
@@ -492,6 +543,8 @@ async function syncOfflineData() {
 function validarCampos(isWhatsApp = false, whatsappNumber = '') {
   if (!elements.inputNome.value.trim()) { showMessage('Preencha o nome do paciente.', 'error'); return false; }
   if (elements.inputCpf.value.trim().length < 14) { showMessage('Preencha o CPF completo.', 'error'); return false; }
+  // validar CPF logicamente
+  if (!validarCPFCompleto(elements.inputCpf.value)) { showMessage('CPF inválido. Verifique.', 'error'); return false; }
   if (isWhatsApp) {
     const phone = whatsappNumber.replace(/\D/g, '');
     if (phone.length < 10) { showMessage('Preencha um WhatsApp válido com DDD.', 'error'); return false; }
@@ -502,41 +555,63 @@ function validarCampos(isWhatsApp = false, whatsappNumber = '') {
 async function acaoRegistrarEImprimir() {
   if (!validarCampos()) return;
   elements.regPrintBtn.disabled = true;
-  elements.regPrintBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
+  elements.regPrintBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Registrando...';
   aplicarValores();
   if (await registrarDeclaracao()) {
     setTimeout(() => window.print(), 500);
   }
   elements.regPrintBtn.disabled = false;
-  elements.regPrintBtn.innerHTML = '<i class="fas fa-print"></i> Registrar e Imprimir';
+  elements.regPrintBtn.innerHTML = '<i class="fas fa-print" aria-hidden="true"></i> Registrar e Imprimir';
 }
 
 async function acaoExecutarEnvioWhatsApp() {
     const whatsappNumber = elements.modalInputWhatsapp.value;
     if (!validarCampos(true, whatsappNumber)) return;
     elements.modalBtnSend.disabled = true;
-    elements.modalBtnSend.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Gerando...';
+    elements.modalBtnSend.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Gerando...';
     aplicarValores();
     const newId = await registrarDeclaracao();
     if (!newId) {
         elements.modalBtnSend.disabled = false;
-        elements.modalBtnSend.innerHTML = '<i class="fab fa-whatsapp"></i> Confirmar e Enviar';
+        elements.modalBtnSend.innerHTML = '<i class="fab fa-whatsapp" aria-hidden="true"></i> Confirmar e Enviar';
         return;
     }
     const element = document.getElementById('doc');
-    const options = { margin: 0, filename: `Declaracao_${elements.inputNome.value.trim().replace(/ /g, '_')}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' } };
-    await html2pdf().from(element).set(options).save();
+    
+    const safeName = elements.inputNome.value.trim().replace(/[^a-zA-Z0-9_\-]/g, '_') || 'declaracao';
+    const options = {
+        margin: 0,
+        filename: `Declaracao_${safeName}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+            scale: 3,
+            useCORS: true,
+            letterRendering: true
+        },
+        jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
+        }
+    };
+    try {
+        await html2pdf().from(element).set(options).save();
+    } catch (err) {
+        console.warn('html2pdf falhou:', err);
+        showMessage('Falha ao gerar PDF automaticamente. Tente baixar manualmente.', 'error');
+    }
     const phone = '55' + whatsappNumber.replace(/\D/g, '');
     const message = `Olá. Somos da *UBS Laranjeiras*. Segue a sua declaração de comparecimento em PDF.\n\n*ID de Autenticação:* ${newId}`;
     const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-    showMessage('PDF baixado! Anexe-o na conversa do WhatsApp.', 'info');
+    showMessage('PDF gerado! Anexe-o na conversa do WhatsApp.', 'info');
     elements.whatsappModalOverlay.classList.remove('active');
+    elements.whatsappModalOverlay.setAttribute('aria-hidden', 'true');
     setTimeout(() => {
         window.open(whatsappUrl, '_blank');
         elements.modalBtnSend.disabled = false;
-        elements.modalBtnSend.innerHTML = '<i class="fab fa-whatsapp"></i> Confirmar e Enviar';
+        elements.modalBtnSend.innerHTML = '<i class="fab fa-whatsapp" aria-hidden="true"></i> Confirmar e Enviar';
         elements.modalInputWhatsapp.value = '';
-    }, 2000);
+    }, 800);
 }
 
 async function acaoBaixarEmBranco() {
@@ -550,15 +625,31 @@ async function acaoBaixarEmBranco() {
     elements.sigName.textContent = 'Recepção';
     elements.stampImg.style.display = 'none';
     const element = document.getElementById('doc');
+
     const options = {
         margin: 0,
         filename: 'Declaracao_em_Branco_Recepcao.pdf',
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'cm', format: 'a4', orientation: 'portrait' }
+        html2canvas: {
+            scale: 3,
+            useCORS: true,
+            letterRendering: true
+        },
+        jsPDF: {
+            unit: 'mm',
+            format: 'a4',
+            orientation: 'portrait'
+        }
     };
-    await html2pdf().from(element).set(options).save();
-    showMessage('PDF em branco para Recepção baixado!', 'info');
+
+    try {
+        await html2pdf().from(element).set(options).save();
+        showMessage('PDF em branco para Recepção baixado!', 'success');
+    } catch (err) {
+        console.warn('Erro ao gerar PDF em branco:', err);
+        showMessage('Falha ao gerar PDF em branco.', 'error');
+    }
+
     bodyTextP.innerHTML = originalBodyHTML;
     cidBlock.style.display = '';
     elements.sigName.textContent = originalSigNameText;
@@ -573,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
   elements.sendWhatsappBtn.addEventListener('click', showWhatsappModal);
   elements.downloadBlankBtn.addEventListener('click', acaoBaixarEmBranco);
   elements.modalBtnSend.addEventListener('click', acaoExecutarEnvioWhatsApp);
-  elements.modalBtnCancel.addEventListener('click', () => elements.whatsappModalOverlay.classList.remove('active'));
+  elements.modalBtnCancel.addEventListener('click', () => { elements.whatsappModalOverlay.classList.remove('active'); elements.whatsappModalOverlay.setAttribute('aria-hidden', 'true'); });
   
   if (URL_PDF_OFICIAL && URL_PDF_OFICIAL.startsWith('http')) {
       elements.downloadOficialPdf.href = URL_PDF_OFICIAL;
@@ -581,19 +672,23 @@ document.addEventListener('DOMContentLoaded', () => {
       elements.downloadOficialPdf.style.display = 'none';
   }
   
-  Object.values(elements).forEach(el => {
-      if (el && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
+  // Aplicar listeners de forma segura (somente em elementos existentes)
+  for (const key in elements) {
+      const el = elements[key];
+      if (el && el.tagName && (el.tagName === 'INPUT' || el.tagName === 'SELECT')) {
           el.addEventListener('input', aplicarValores);
           el.addEventListener('change', aplicarValores);
       }
-  });
+  }
 
   elements.inputCpf.addEventListener('input', (e) => { e.target.value = formatarCPF(e.target.value); });
   window.addEventListener('beforeprint', aplicarValores);
   window.addEventListener('online', syncOfflineData);
 
   preencherCamposComDataAtual();
-  showProfessionalModal();
+  // abrir modal de profissionais automaticamente somente se nenhum foi marcado
+  const hasSelecionado = PROFISSIONAIS.some(p => p.selecionado);
+  if (!hasSelecionado) showProfessionalModal();
   if(navigator.onLine) syncOfflineData();
 });
 
