@@ -97,13 +97,14 @@
     .feedback-container { min-height: 40px; display: flex; align-items: center; justify-content: center; }
     .feedback-container p {
       display: inline-block; margin: 0; padding: 8px 12px; border-radius: 6px; font-weight: 700;
-      overflow: hidden; border-right: .15em solid; white-space: nowrap; vertical-align: middle; max-width: 100%;
+      vertical-align: middle; max-width: 100%; opacity: 0;
+      transition: opacity 0.3s ease-in-out;
     }
-    .feedback-container p.success { background: #d4edda; color: #155724; border-color: #155724; }
-    .feedback-container p.error { background: #f8d7da; color: #721c24; border-color: #721c24; }
-    .feedback-container p.info { background: #d1ecf1; color: #0c5460; border-color: #0c5460; }
-    @keyframes typing { from { width: 0 } to { width: 100% } }
-    @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: inherit; } }
+    .feedback-container p.show { opacity: 1; }
+    .feedback-container p.success { background: #d4edda; color: #155724; border: 1px solid #155724; }
+    .feedback-container p.error { background: #f8d7da; color: #721c24; border: 1px solid #721c24; }
+    .feedback-container p.info { background: #d1ecf1; color: #0c5460; border: 1px solid #0c5460; }
+    
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.6); display: none; align-items: center;
@@ -309,7 +310,7 @@ const elements = {
     regPrintBtn: document.getElementById('regprint'),
     sendWhatsappBtn: document.getElementById('send-whatsapp'),
     downloadBlankBtn: document.getElementById('download-blank-btn'),
-    downloadFilledBtn: document.getElementById('download-filled-btn'), // Botão novo
+    downloadFilledBtn: document.getElementById('download-filled-btn'),
     downloadOficialPdf: document.getElementById('download-oficial-pdf'),
     feedbackContainer: document.getElementById('feedback-container'),
     professionalModalOverlay: document.getElementById('professional-modal-overlay'),
@@ -336,27 +337,29 @@ const formatDateLong = (d) => {
 };
 
 function showMessage(text, type = 'success') {
-    clearTimeout(messageTimeout);
-    elements.feedbackContainer.innerHTML = '';
+    clearTimeout(messageTimeout); // Limpa qualquer timeout anterior
+    elements.feedbackContainer.innerHTML = ''; // Limpa mensagens anteriores
+
     const p = document.createElement('p');
     p.textContent = text;
     p.className = type;
-    const charCount = text.length;
-    const typingDuration = Math.max(1.5, charCount * 0.065);
-    const initialDelay = 0.2;
-    p.style.animation = `
-        typing ${typingDuration}s steps(${charCount}, end) ${initialDelay}s forwards,
-        blink-caret 0.75s step-end ${charCount + 2} ${initialDelay}s
-    `;
-    setTimeout(() => {
-        p.style.animationName = 'typing, show-caret';
-        p.style.animationIterationCount = '1, infinite';
-    }, (typingDuration + initialDelay) * 1000);
     elements.feedbackContainer.appendChild(p);
-    const totalVisibleTime = (typingDuration + initialDelay) * 1000 + 4000;
+
+    // Força o reflow para garantir que a transição de opacidade ocorra
+    void p.offsetWidth; 
+    p.classList.add('show'); // Inicia o fade-in
+
+    const displayDuration = 4000; // Tempo que a mensagem fica visível
+    const fadeOutDuration = 300; // Duração do fade-out
+
     messageTimeout = setTimeout(() => {
-        elements.feedbackContainer.innerHTML = '';
-    }, totalVisibleTime);
+        p.style.opacity = '0'; // Inicia o fade-out
+        p.addEventListener('transitionend', () => {
+            if (p.parentNode) {
+                p.parentNode.removeChild(p); // Remove a mensagem após o fade-out
+            }
+        }, { once: true });
+    }, displayDuration);
 }
 
 function preencherCamposComDataAtual() {
@@ -525,7 +528,6 @@ async function acaoRegistrarEImprimir() {
   elements.regPrintBtn.innerHTML = '<i class="fas fa-print"></i> Imprimir';
 }
 
-// NOVA FUNÇÃO para baixar o PDF preenchido
 async function acaoBaixarPdfPreenchido() {
     if (!validarCampos()) return;
     elements.downloadFilledBtn.disabled = true;
@@ -588,33 +590,56 @@ async function acaoExecutarEnvioWhatsApp() {
     }, 2000);
 }
 
+// --- FUNÇÃO PARA GERAR MODELO EM BRANCO (SEM ALTERAÇÕES SIGNIFICATIVAS NESTA VERSÃO) ---
 async function acaoBaixarEmBranco() {
+    const header = document.querySelector('.header');
     const bodyTextP = document.getElementById('body-text').querySelector('p');
     const cidBlock = document.querySelector('.cid');
+
     const originalBodyHTML = bodyTextP.innerHTML;
+    const originalHeaderStyle = header.style.cssText;
     const originalSigNameText = elements.sigName.textContent;
     const originalStampDisplay = elements.stampImg.style.display;
-    bodyTextP.innerHTML = `Declaramos, para os devidos fins, que ______________________________________________________, portador(a) do CPF nº ________________________, esteve presente nesta unidade na data de _____/_____/_____, no período compreendido entre _____:_____ e _____:_____.`;
-    cidBlock.style.display = 'none';
-    elements.sigName.textContent = 'Recepção';
-    elements.stampImg.style.display = 'none';
-    const element = document.getElementById('doc');
-    
-    const options = {
-        margin: 5,
-        filename: 'Declaracao_em_Branco_Recepcao.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 3, useCORS: true, letterRendering: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
+    const originalCidDisplay = cidBlock.style.display;
 
-    await html2pdf().from(element).set(options).save();
-    showMessage('PDF em branco para Recepção baixado!', 'info');
-    bodyTextP.innerHTML = originalBodyHTML;
-    cidBlock.style.display = '';
-    elements.sigName.textContent = originalSigNameText;
-    elements.stampImg.style.display = originalStampDisplay;
-    aplicarValores();
+    try {
+        header.style.display = 'grid';
+        header.style.gridTemplateColumns = '1fr 3fr 1fr';
+        header.style.alignItems = 'center';
+        header.querySelector('.left').style.textAlign = 'left';
+        header.querySelector('.govtext').style.textAlign = 'center';
+        header.querySelector('.right').style.textAlign = 'right';
+
+        bodyTextP.innerHTML = `Declaramos, para os devidos fins, que <span class="strong">_________________________________________</span>, portador(a) do CPF n° <span class="strong">_________________</span>, esteve presente nesta unidade na data de <span class="strong">____/____/______</span>, no período compreendido entre <span class="strong">____:____</span> e <span class="strong">____:____</span>.`;
+        
+        cidBlock.style.display = 'none';
+        elements.sigName.textContent = 'Recepção';
+        elements.stampImg.style.display = 'none';
+
+        const element = document.getElementById('doc');
+        const options = {
+            margin: 5,
+            filename: 'Declaracao_Recepcao_em_Branco.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 3, useCORS: true, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        await html2pdf().from(element).set(options).save();
+        showMessage('PDF em branco para Recepção baixado!', 'info');
+
+    } catch (error) {
+        console.error("Erro ao gerar PDF em branco:", error);
+        showMessage('Ocorreu um erro ao gerar o PDF.', 'error');
+    } finally {
+        header.style.cssText = originalHeaderStyle; 
+        bodyTextP.innerHTML = originalBodyHTML;
+        cidBlock.style.display = originalCidDisplay;
+        elements.sigName.textContent = originalSigNameText;
+        elements.stampImg.style.display = originalStampDisplay;
+        
+        aplicarValores(); 
+    }
 }
 
 
@@ -624,14 +649,20 @@ document.addEventListener('DOMContentLoaded', () => {
   elements.regPrintBtn.addEventListener('click', acaoRegistrarEImprimir);
   elements.sendWhatsappBtn.addEventListener('click', showWhatsappModal);
   elements.downloadBlankBtn.addEventListener('click', acaoBaixarEmBranco);
-  elements.downloadFilledBtn.addEventListener('click', acaoBaixarPdfPreenchido); // Listener para o botão novo
+  elements.downloadFilledBtn.addEventListener('click', acaoBaixarPdfPreenchido);
   elements.modalBtnSend.addEventListener('click', acaoExecutarEnvioWhatsApp);
   elements.modalBtnCancel.addEventListener('click', () => elements.whatsappModalOverlay.classList.remove('active'));
   
-  if (URL_PDF_OFICIAL && URL_PDF_OFICIAL.startsWith('http')) {
+  // Oculta o botão de PDF Oficial se o link não for um URL válido
+  try {
+      new URL(URL_PDF_OFICIAL);
       elements.downloadOficialPdf.href = URL_PDF_OFICIAL;
-  } else {
-      elements.downloadOficialPdf.style.display = 'none';
+  } catch(_) {
+      if (!URL_PDF_OFICIAL || URL_PDF_OFICIAL === 'COLE_O_SEU_LINK_AQUI') {
+         elements.downloadOficialPdf.style.display = 'none';
+      } else {
+         elements.downloadOficialPdf.href = URL_PDF_OFICIAL;
+      }
   }
   
   Object.values(elements).forEach(el => {
